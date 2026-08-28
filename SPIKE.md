@@ -54,6 +54,12 @@ Las mutaciones son server actions que revalidan el layout.
 `/api/evidencia/[id]` con sesión validada. `Evidence.key` mantiene el contrato
 para migrar a S3 cambiando solo `src/server/storage.ts`.
 
+> ⚠️ **No funciona en serverless.** En Vercel el filesystem es de solo lectura
+> salvo `/tmp`, que además es efímero y no se comparte entre instancias: las
+> subidas fallan en tiempo de ejecución (el resto del sistema funciona bien).
+> Para desplegar con evidencia operativa hay que reemplazar
+> `src/server/storage.ts` por un blob store.
+
 ## Diferencias respecto al mockup
 
 - **Sin Google OAuth.** Solo correo y contraseña, por pedido explícito.
