@@ -19,9 +19,17 @@ export const MIME_POR_TIPO: Record<string, string> = {
   pdf: "application/pdf",
 }
 
+/**
+ * Raíz de las subidas, resuelta en tiempo de ejecución desde EVIDENCE_DIR.
+ *
+ * Los `turbopackIgnore` de este módulo son necesarios: la ruta depende de una
+ * variable de entorno, así que el tracer de Next no puede acotar qué archivos
+ * se leen y, sin la anotación, incluye el proyecto completo en el bundle del
+ * servidor. Ninguna de estas rutas se resuelve en build.
+ */
 function baseDir(): string {
   const dir = process.env.EVIDENCE_DIR?.trim() || ".uploads/evidencia"
-  return path.isAbsolute(dir) ? dir : path.join(process.cwd(), dir)
+  return path.isAbsolute(dir) ? dir : path.join(/* turbopackIgnore: true */ process.cwd(), dir)
 }
 
 /** Normaliza la extensión al tipo que guarda la columna Evidence.type. */
@@ -44,7 +52,7 @@ export async function guardarEvidencia(file: File): Promise<ArchivoGuardado> {
   const key = `${randomUUID()}.${ext === "jpeg" ? "jpg" : ext}`
   const dir = baseDir()
   await mkdir(dir, { recursive: true })
-  await writeFile(path.join(dir, key), buf)
+  await writeFile(path.join(/* turbopackIgnore: true */ dir, key), buf)
 
   return { key, nombre: file.name, tipo: tipoArchivo(file.name), size: file.size }
 }
@@ -53,13 +61,13 @@ export async function leerEvidencia(key: string): Promise<{ buf: Buffer; etag: s
   // `key` viene de la base, pero se normaliza igual: nunca debe escapar del
   // directorio de subidas.
   const safe = path.basename(key)
-  const buf = await readFile(path.join(baseDir(), safe))
+  const buf = await readFile(path.join(/* turbopackIgnore: true */ baseDir(), safe))
   return { buf, etag: `"${createHash("sha1").update(buf).digest("hex")}"` }
 }
 
 export async function borrarEvidencia(key: string): Promise<void> {
   try {
-    await unlink(path.join(baseDir(), path.basename(key)))
+    await unlink(path.join(/* turbopackIgnore: true */ baseDir(), path.basename(key)))
   } catch {
     // El archivo ya no está: la fila de la base manda, no bloqueamos el borrado.
   }
