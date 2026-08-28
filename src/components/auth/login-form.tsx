@@ -1,97 +1,98 @@
 "use client"
 
+/* ============================================================
+   Formulario de inicio de sesión — portado de src/login.jsx.
+   Solo correo y contraseña (sin Google, por decisión del spike).
+   ============================================================ */
 import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
-import { GoogleIcon } from "@/components/icons/google"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
+import { Field, Input, PasswordInput } from "@/components/kit"
+import { I } from "@/components/icons"
+import { signIn } from "@/lib/auth-client"
 
-// Vista sin lógica: el submit y el acceso con Google se conectarán a
-// Better Auth (email/contraseña + Google) en una iteración posterior.
 export function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [pass, setPass] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+    const { error: err } = await signIn.email({ email: email.trim(), password: pass })
+    if (err) {
+      // Error genérico a propósito: no revelamos qué campo falló ni si la
+      // cuenta existe. Better Auth responde 403 cuando la cuenta está baneada.
+      setError(
+        err.status === 403 && err.code === "BANNED_USER"
+          ? "Esta cuenta está desactivada. Contacta a un administrador."
+          : "Correo o contraseña incorrectos. Verifica tus datos e inténtalo de nuevo.",
+      )
+      setLoading(false)
+      return
+    }
+    router.replace("/resumen")
+    router.refresh()
+  }
 
   return (
-    <div className="w-full max-w-[372px]">
-      <h1 className="text-[22px] font-semibold tracking-tight">Iniciar sesión</h1>
-      <p className="text-muted-foreground mt-1.5 text-[13.5px]">Ingresa con tu cuenta institucional.</p>
+    <div className="login-card">
+      <h2 style={{ fontSize: 22, margin: "0 0 6px", fontWeight: 600 }}>Iniciar sesión</h2>
+      <p className="muted" style={{ margin: "0 0 26px", fontSize: 13.5 }}>
+        Ingresa con tu cuenta institucional.
+      </p>
 
-      <form
-        className="mt-6 space-y-4"
-        onSubmit={(event) => {
-          event.preventDefault()
-        }}
-      >
-        <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-secondary-foreground text-[12.5px] font-semibold">
-            Correo electrónico
-          </Label>
+      {error && (
+        <div className="danger-box" style={{ marginBottom: 18 }}>
+          <I.AlertCircle size={17} style={{ flexShrink: 0, marginTop: 1 }} />
+          <div>{error}</div>
+        </div>
+      )}
+
+      <form onSubmit={submit}>
+        <Field label="Correo electrónico">
           <Input
-            id="email"
-            name="email"
             type="email"
+            value={email}
             autoComplete="username"
-            placeholder="nombre@nunoa.cl"
-            className="h-10 rounded-md text-[13.5px]"
+            onChange={(e) => {
+              setEmail(e.target.value)
+              setError("")
+            }}
+            placeholder="nombre.apellido@nunoa.cl"
+            invalid={!!error}
+            required
           />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="password" className="text-secondary-foreground text-[12.5px] font-semibold">
-            Contraseña
-          </Label>
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              placeholder="••••••••"
-              className="h-10 rounded-md pr-10 text-[13.5px]"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((visible) => !visible)}
-              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-              className="text-ink-muted hover:bg-muted hover:text-foreground focus-visible:ring-ring/50 absolute inset-y-0 right-1 my-auto grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-3 focus-visible:outline-none"
-            >
-              {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-            </button>
-          </div>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground text-[12.5px] font-medium transition-colors"
-          >
-            ¿Olvidaste tu contraseña?
-          </button>
-        </div>
-
-        <Button type="submit" className="hover:bg-ink-soft h-10 w-full rounded-md text-[13px] font-semibold">
-          Iniciar sesión
-        </Button>
+        </Field>
+        <Field label="Contraseña">
+          <PasswordInput
+            value={pass}
+            onChange={(e) => {
+              setPass(e.target.value)
+              setError("")
+            }}
+            placeholder="••••••••"
+            invalid={!!error}
+            autoComplete="current-password"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="btn btn--primary btn--block"
+          disabled={loading}
+          style={{ padding: "11px", marginTop: 4 }}
+        >
+          {loading ? "Ingresando…" : "Iniciar sesión"}
+        </button>
       </form>
 
-      <div className="my-5 flex items-center gap-3">
-        <span className="bg-border h-px flex-1" />
-        <span className="text-muted-foreground text-xs">o</span>
-        <span className="bg-border h-px flex-1" />
-      </div>
-
-      <Button
-        type="button"
-        variant="outline"
-        className="bg-surface hover:bg-accent hover:border-ink-muted h-10 w-full rounded-md text-[13px] font-semibold"
-      >
-        <GoogleIcon className="size-[18px]" />
-        Continuar con Google
-      </Button>
-
-      <p className="text-muted-foreground mt-6 text-center text-[11.5px] leading-relaxed">
+      <p className="muted" style={{ fontSize: 11.5, textAlign: "center", marginTop: 26, lineHeight: 1.6 }}>
         Acceso exclusivo para personal autorizado de la Municipalidad de Ñuñoa.
+        <br />
+        ¿Olvidaste tu contraseña? Solicita a un administrador que la restablezca.
       </p>
     </div>
   )

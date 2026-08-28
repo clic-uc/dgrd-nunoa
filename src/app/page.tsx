@@ -1,7 +1,6 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Hola mundo</h1>
-    </main>
-  )
+import { redirect } from "next/navigation"
+import { getSession } from "@/server/session"
+
+export default async function Home() {
+  redirect((await getSession()) ? "/resumen" : "/login")
 }

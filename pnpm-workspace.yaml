@@ -4,3 +4,4 @@ allowBuilds:
   sharp: true
   msw: false
   unrs-resolver: false
+  esbuild: true

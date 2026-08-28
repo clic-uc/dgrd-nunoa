@@ -15,6 +15,7 @@ datasource db {
 model User {
   id            String    @id
   name          String
+  lastName      String?
   email         String
   emailVerified Boolean   @default(false)
   image         String?
@@ -157,13 +158,14 @@ model Event {
 }
 
 model Request {
-  id        String        @id @default(cuid())
-  folio     String        @unique
-  channel   String // medio
-  response  String?
-  status    RequestStatus @default(pending)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  folio       String        @unique
+  channel     String // medio
+  description String? // lo solicitado
+  response    String?
+  status      RequestStatus @default(pending)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Al eliminar el Evento, la solicitud se desvincula (eventId -> null).
   eventId String?

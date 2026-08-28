@@ -1,0 +1,2082 @@
+{
+  "usuarios": [
+    {
+      "id": "u-1",
+      "nombre": "Carlos",
+      "apellido": "Alvarado",
+      "correo": "calvarado@nunoa.cl",
+      "rol": "admin",
+      "estado": "activo",
+      "google": true
+    },
+    {
+      "id": "u-2",
+      "nombre": "Diego",
+      "apellido": "Fuentes",
+      "correo": "diego.fuentes@nunoa.cl",
+      "rol": "regular",
+      "estado": "activo",
+      "google": false
+    },
+    {
+      "id": "u-3",
+      "nombre": "Marcela",
+      "apellido": "Soto",
+      "correo": "marcela.soto@nunoa.cl",
+      "rol": "regular",
+      "estado": "activo",
+      "google": true
+    },
+    {
+      "id": "u-4",
+      "nombre": "Rodrigo",
+      "apellido": "Pérez",
+      "correo": "rodrigo.perez@nunoa.cl",
+      "rol": "regular",
+      "estado": "inactivo",
+      "google": false
+    },
+    {
+      "id": "u-5",
+      "nombre": "Javiera",
+      "apellido": "Núñez",
+      "correo": "javiera.nunez@nunoa.cl",
+      "rol": "regular",
+      "estado": "activo",
+      "google": true
+    },
+    {
+      "id": "u-6",
+      "nombre": "Tomás",
+      "apellido": "Vidal",
+      "correo": "tomas.vidal@nunoa.cl",
+      "rol": "regular",
+      "estado": "activo",
+      "google": false
+    }
+  ],
+  "tiposEvento": [
+    {
+      "id": "te-1",
+      "nombre": "Anegamiento"
+    },
+    {
+      "id": "te-2",
+      "nombre": "Incendio estructural"
+    },
+    {
+      "id": "te-3",
+      "nombre": "Vendaval"
+    },
+    {
+      "id": "te-4",
+      "nombre": "Corte de suministro"
+    },
+    {
+      "id": "te-5",
+      "nombre": "Sismo"
+    },
+    {
+      "id": "te-6",
+      "nombre": "Emergencia social"
+    },
+    {
+      "id": "te-7",
+      "nombre": "Incendio forestal"
+    }
+  ],
+  "insumos": [
+    {
+      "id": "ins-1",
+      "tipo": "Polietileno",
+      "unidad": "rollo"
+    },
+    {
+      "id": "ins-2",
+      "tipo": "Polietileno",
+      "unidad": "corte"
+    },
+    {
+      "id": "ins-3",
+      "tipo": "Sacos de arena",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-4",
+      "tipo": "Sacos de aserrín",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-5",
+      "tipo": "Kit de aseo",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-6",
+      "tipo": "Guantes",
+      "unidad": "par"
+    },
+    {
+      "id": "ins-7",
+      "tipo": "Mascarillas",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-8",
+      "tipo": "Sacos de escombros",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-9",
+      "tipo": "Camarotes",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-10",
+      "tipo": "Frazadas",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-11",
+      "tipo": "Sábanas",
+      "unidad": "unidad"
+    },
+    {
+      "id": "ins-12",
+      "tipo": "Almohadas",
+      "unidad": "unidad"
+    }
+  ],
+  "entregas": [
+    {
+      "id": "en-1",
+      "folio": "ENT-0001",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-02-02",
+      "direccion": "Comuna de Maipu",
+      "beneficiario": "Diferentes vecinos",
+      "contacto": "",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 9
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-02-02T12:00:00"
+    },
+    {
+      "id": "en-2",
+      "folio": "ENT-0002",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-03-14",
+      "direccion": "Las Encinas N° 2525",
+      "beneficiario": "Sra. Paola Risseti M.",
+      "contacto": "",
+      "jv": "J.V. N°30",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 13
+        },
+        {
+          "insumoId": "ins-5",
+          "cantidad": 30
+        },
+        {
+          "insumoId": "ins-6",
+          "cantidad": 24
+        },
+        {
+          "insumoId": "ins-7",
+          "cantidad": 25
+        },
+        {
+          "insumoId": "ins-8",
+          "cantidad": 28
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-03-14T12:00:00"
+    },
+    {
+      "id": "en-3",
+      "folio": "ENT-0003",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-03-14",
+      "direccion": "Las Encinas N° 2511",
+      "beneficiario": "Sra. Norma Garrido T.",
+      "contacto": "",
+      "jv": "J.V. N°30",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 13
+        },
+        {
+          "insumoId": "ins-5",
+          "cantidad": 31
+        },
+        {
+          "insumoId": "ins-6",
+          "cantidad": 27
+        },
+        {
+          "insumoId": "ins-7",
+          "cantidad": 26
+        },
+        {
+          "insumoId": "ins-8",
+          "cantidad": 29
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-03-14T12:00:00"
+    },
+    {
+      "id": "en-4",
+      "folio": "ENT-0004",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-03-20",
+      "direccion": "Fco. Meneses N° 1375",
+      "beneficiario": "Vecinos Junta Vecinos 37",
+      "contacto": "Sra. Maria Acevedo/ 930804147",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-03-20T12:00:00"
+    },
+    {
+      "id": "en-5",
+      "folio": "ENT-0005",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-03-20",
+      "direccion": "Via 12 N°930",
+      "beneficiario": "Vecinos Junta Vecinos 35",
+      "contacto": "Sra. Maria Maldonado/ 996187879",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 15
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-03-20T12:00:00"
+    },
+    {
+      "id": "en-6",
+      "folio": "ENT-0006",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-04-20",
+      "direccion": "Tunga N°4294",
+      "beneficiario": "Valeria Labra",
+      "contacto": "988400024",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 2
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-04-20T12:00:00"
+    },
+    {
+      "id": "en-7",
+      "folio": "ENT-0007",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-04-20",
+      "direccion": "Guillermo Mann N°2991 Casa Q",
+      "beneficiario": "Rosa Fuentes",
+      "contacto": "",
+      "jv": "J.V. N°30",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 40
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-04-20T12:00:00"
+    },
+    {
+      "id": "en-8",
+      "folio": "ENT-0008",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Pje Los Talaveras N°963",
+      "beneficiario": "Alejandro Acevedo",
+      "contacto": "56 9 53021181",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-9",
+      "folio": "ENT-0009",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Pje Los Talaveras N°954",
+      "beneficiario": "Sebastian Perez",
+      "contacto": "56 9 82395616",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-10",
+      "folio": "ENT-0010",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Brown Sur N°890",
+      "beneficiario": "Angelica",
+      "contacto": "56 9 84372704",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-11",
+      "folio": "ENT-0011",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Brown Sur N°875",
+      "beneficiario": "Sofia",
+      "contacto": "56 9 82640412",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-12",
+      "folio": "ENT-0012",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Brown Sur N°971",
+      "beneficiario": "Nelly Pak",
+      "contacto": "56 9 77565541",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-13",
+      "folio": "ENT-0013",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Tegualda N°1689",
+      "beneficiario": "Gisela Paez",
+      "contacto": "56 9 35478535",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-14",
+      "folio": "ENT-0014",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-05",
+      "direccion": "Justo Ugarte N°4869",
+      "beneficiario": "Patricia Flores",
+      "contacto": "56 9 82397673",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-05T12:00:00"
+    },
+    {
+      "id": "en-15",
+      "folio": "ENT-0015",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Lluta N°3800",
+      "beneficiario": "Junta Vecinos 27",
+      "contacto": "Pamela Carvajal / +56 9 75639740",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-16",
+      "folio": "ENT-0016",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Tres Antonio N°1658",
+      "beneficiario": "Junta vecinos 30",
+      "contacto": "Juana Aranda / +56 9 76644507",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-17",
+      "folio": "ENT-0017",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Jazmines N°1705",
+      "beneficiario": "Junta Vecinos 33",
+      "contacto": "Cristian Toledo / +56 9 44470687",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-18",
+      "folio": "ENT-0018",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Nueva Uno N°1600",
+      "beneficiario": "Junta Vecinos 34",
+      "contacto": "Teresa Yantorno",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-19",
+      "folio": "ENT-0019",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Via 12 N°930",
+      "beneficiario": "Vecinos Junta Vecinos 35",
+      "contacto": "Sra. Maria Maldonado/ 996187879",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 15
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-20",
+      "folio": "ENT-0020",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Estación Pirque N°1769",
+      "beneficiario": "Ricardo Guzman",
+      "contacto": "56 9 99494046",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-21",
+      "folio": "ENT-0021",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje Carlos Ditborn N°745",
+      "beneficiario": "Claudia vega",
+      "contacto": "56 9 98846787",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-22",
+      "folio": "ENT-0022",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Estación Pirque N°1807",
+      "beneficiario": "Victoria Celis",
+      "contacto": "56 9 76673824",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-23",
+      "folio": "ENT-0023",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Sargento Nacarrete N°2077",
+      "beneficiario": "Juan I. Gutierrez",
+      "contacto": "56 9 86179648",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-24",
+      "folio": "ENT-0024",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pasaje Guillermo Mann N°2834 K",
+      "beneficiario": "Claudia Lobos",
+      "contacto": "56 9 53388615",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-25",
+      "folio": "ENT-0025",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Viloslava N°820 D.19",
+      "beneficiario": "Natalia Soza",
+      "contacto": "56 9 31222461",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-26",
+      "folio": "ENT-0026",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Peatones 16 N°4522",
+      "beneficiario": "Pamela Lang",
+      "contacto": "56 9 64251649",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-27",
+      "folio": "ENT-0027",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Calle 6 N°2004",
+      "beneficiario": "Tamara Diaz",
+      "contacto": "56 9 54102117",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-28",
+      "folio": "ENT-0028",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Tres Antonio N°1139",
+      "beneficiario": "Rosa Retamal",
+      "contacto": "56 9 57300735",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-29",
+      "folio": "ENT-0029",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pasaje Los Albañiles N°1982",
+      "beneficiario": "Andrea Rodriguez",
+      "contacto": "56 9 88913050",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-30",
+      "folio": "ENT-0030",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Alerces N°2611",
+      "beneficiario": "Yamile ureta",
+      "contacto": "56 9 49642891",
+      "jv": "J.V. N°31",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        },
+        {
+          "insumoId": "ins-3",
+          "cantidad": 4
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-31",
+      "folio": "ENT-0031",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Pozos N°3571",
+      "beneficiario": "Paulina Rodriguez",
+      "contacto": "56 9 78381497",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-32",
+      "folio": "ENT-0032",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Tres Antonio N°1655",
+      "beneficiario": "Paola Flores",
+      "contacto": "56 9 85651159",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-33",
+      "folio": "ENT-0033",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Peatones 17 N°4563",
+      "beneficiario": "Roxana Soto",
+      "contacto": "56 9 48559523",
+      "jv": "J.V. N°24",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        },
+        {
+          "insumoId": "ins-3",
+          "cantidad": 4
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-34",
+      "folio": "ENT-0034",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Aliaga N°5547",
+      "beneficiario": "Patricia Nuñez",
+      "contacto": "56 9 91702881",
+      "jv": "J.V. N°22",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        },
+        {
+          "insumoId": "ins-3",
+          "cantidad": 4
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-35",
+      "folio": "ENT-0035",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Duble Almeyda N°4686 D. 105",
+      "beneficiario": "Paula Lopez",
+      "contacto": "56 9 54990159",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-36",
+      "folio": "ENT-0036",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Justo Ugarte N°4853",
+      "beneficiario": "Gloria tapia",
+      "contacto": "56 9 73042983",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-37",
+      "folio": "ENT-0037",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Exequiel Fernandez N°1340",
+      "beneficiario": "Nelson ramirez",
+      "contacto": "56 9 95298775",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-38",
+      "folio": "ENT-0038",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Quipue N°4242",
+      "beneficiario": "Junta vecinos 25",
+      "contacto": "Marly Espinoza / 56 9 66353736",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-1",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-39",
+      "folio": "ENT-0039",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Avalos N°5262",
+      "beneficiario": "Teresa Jara",
+      "contacto": "",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 56
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-40",
+      "folio": "ENT-0040",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Avalos N°5264",
+      "beneficiario": "Gabriel garcia",
+      "contacto": "",
+      "jv": "J.V. N°3",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 67
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-41",
+      "folio": "ENT-0041",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Duble Almeyda N°3300 Casa F",
+      "beneficiario": "Cristian Landeros",
+      "contacto": "56 9 96908974",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-42",
+      "folio": "ENT-0042",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Juan Moya N°939",
+      "beneficiario": "Mohamed Albalawi",
+      "contacto": "56 9 33084070",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-43",
+      "folio": "ENT-0043",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje. Lo Plaza N°875",
+      "beneficiario": "Claudia Espinoza",
+      "contacto": "56 9 90884634",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-44",
+      "folio": "ENT-0044",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Eduardo Castillo Velasco N°4114",
+      "beneficiario": "Jorge Montealegre",
+      "contacto": "56 9 75106808",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-45",
+      "folio": "ENT-0045",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Dr. A Andrade N°4335",
+      "beneficiario": "Claudia Mardones",
+      "contacto": "56 9 92342640",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 2
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-46",
+      "folio": "ENT-0046",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje. Los Cerezos 689 B",
+      "beneficiario": "Ana M. Fabres",
+      "contacto": "56 9 81795135",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 2
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-47",
+      "folio": "ENT-0047",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Jardines 562 B",
+      "beneficiario": "Maria L. Riquelme",
+      "contacto": "56 9 93273929",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-48",
+      "folio": "ENT-0048",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Juan Moya N°642",
+      "beneficiario": "Amanda Coderch",
+      "contacto": "56 9 33156480",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-49",
+      "folio": "ENT-0049",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje Juan Moya N° 625",
+      "beneficiario": "Flavio Salas",
+      "contacto": "56 9 92503126",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-50",
+      "folio": "ENT-0050",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Juan Moya N°820",
+      "beneficiario": "Virginia Mena",
+      "contacto": "56 9 79595737",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-51",
+      "folio": "ENT-0051",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Dr. A Andrade N°4280",
+      "beneficiario": "Sergio Rucan",
+      "contacto": "56 9 98860938",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-52",
+      "folio": "ENT-0052",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje. Santa Julia N°565",
+      "beneficiario": "Jorge Carreño",
+      "contacto": "56 9 40123460",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-53",
+      "folio": "ENT-0053",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Los Jardines N°948",
+      "beneficiario": "Loreto Rozas",
+      "contacto": "56 9 87689674",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-54",
+      "folio": "ENT-0054",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Juan Moya N°155",
+      "beneficiario": "Gonzalo tapia",
+      "contacto": "56 9 93028847",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-55",
+      "folio": "ENT-0055",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje Juan Moya N°388",
+      "beneficiario": "Antonieta Cerda",
+      "contacto": "56 9 92518626",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-56",
+      "folio": "ENT-0056",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje. Santa Julia N°864",
+      "beneficiario": "Isabel caceres",
+      "contacto": "56 9 73888761",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-57",
+      "folio": "ENT-0057",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pje. Los Cerezos N°876",
+      "beneficiario": "Luis Droguet",
+      "contacto": "56 9 90995295",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-58",
+      "folio": "ENT-0058",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Juan Moya N°989",
+      "beneficiario": "Junta Vecinos 20",
+      "contacto": "56 9 43985817",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-59",
+      "folio": "ENT-0059",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Pasaje 13 Casa 4612",
+      "beneficiario": "Ximena Yaeger",
+      "contacto": "56 9 36198219",
+      "jv": "—",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 1
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-60",
+      "folio": "ENT-0060",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Natalio stein N°4880",
+      "beneficiario": "J nta Vecinos 3/ Karen Serrano",
+      "contacto": "",
+      "jv": "J.V. N°3",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 13
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-61",
+      "folio": "ENT-0061",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-05-06",
+      "direccion": "Sede Casa Sur Municipio",
+      "beneficiario": "DIDECO",
+      "contacto": "Evelyn Flores",
+      "jv": "J.V. N°15",
+      "items": [
+        {
+          "insumoId": "ins-2",
+          "cantidad": 2
+        },
+        {
+          "insumoId": "ins-3",
+          "cantidad": 4
+        },
+        {
+          "insumoId": "ins-4",
+          "cantidad": 4
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-05-06T12:00:00"
+    },
+    {
+      "id": "en-62",
+      "folio": "ENT-0062",
+      "eventoId": null,
+      "solicitudId": null,
+      "fecha": "2026-04-14",
+      "direccion": "Diagonal oriente N°1475",
+      "beneficiario": "Veterinaria Oriente",
+      "contacto": "A traves jefe de Turno DSP.",
+      "jv": "J.V. N°8",
+      "items": [
+        {
+          "insumoId": "ins-3",
+          "cantidad": 20
+        }
+      ],
+      "creadoPor": "u-1",
+      "creado": "2026-04-14T12:00:00"
+    }
+  ],
+  "acciones": [
+    {
+      "id": "ae-1",
+      "numero": 1,
+      "anio": 2026,
+      "titulo": "Capacitar a la comunidad local acerca de las amenazas descritas en el Plan de RRD",
+      "fechaInicio": "2026-01-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Capacitaciones coordinadas a traves de los administradores y/o comites de administración, directivas de comunidades y/o copropiedades, colegios, jardines infantiles, otros",
+      "temas": "Sismos · Incendios Estructurales · Uso y manejo de Extintores · Familia Preparada · Kit de emergencias",
+      "creadoPor": "u-1",
+      "creado": "2026-01-01T09:00:00"
+    },
+    {
+      "id": "ae-2",
+      "numero": 2,
+      "anio": 2026,
+      "titulo": "Entregar información sobre los riesgos presentes en el territorio comunal",
+      "fechaInicio": "2026-01-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Distribución de flayer · Capsulas para las redes sociales del municipio · Videos breves para difundir a las Juntas de Vecinos Preparar por parte del Depto. Recopilar en la WEB Recopilar en SENAPRED Recopilar CBÑ",
+      "temas": "sismos · Incendios estructurales · Anegamientos / Inundaciones · Frentes de mal tiempo · Olas de calor · Campaña de Invierno · Familia Preparada · Kit de emergencias · Materiales peligrosos",
+      "creadoPor": "u-1",
+      "creado": "2026-01-01T09:00:00"
+    },
+    {
+      "id": "ae-3",
+      "numero": 3,
+      "anio": 2026,
+      "titulo": "Realizar mesas de trabajo interinstitucionales para coordinar acciones frente a un desastre específico",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-11-30",
+      "comoDesarrollar": "Reunirse con las siguientes instituciones: · Cuerpo de Bomberos de Ñuñoa · Aguas Andinas · Enel · Metrogas · Carabineros 18 y 33 Comisarias · Defensa Civil · Cruz Roja · CESFAM Rosita Renard / Salvador Bustos · SAMU · Radio Afionados Ñuñoa · Juntas de Vecinos con Sedes · CMDS Departamento de Educación · Otras empresas relacionadas con GRD y Emergencias",
+      "temas": "Incendios estructurales · Sismos · Remoción en masa · Anegamiento - Inundaciones · Corte suministros básicos · Riesgo quimico · materiales peligrosos · Otros",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-4",
+      "numero": 4,
+      "anio": 2026,
+      "titulo": "Realizar mesas de trabajo con los actores de la comunidad vecinal, involucrados en la GRD",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Citar a los siguientes estamentos · Carabineros · PDI · CBÑ · Defensa Civil · Cruz roja · Radio Club · Empresas de Servicios Luz - Agua - Gas · Directores de los CEFAM · Directores de Colegios Municipalizados y Particulares · Direcciones municipales · Dirigentes vecinales · Comunidades , copropiedades, otros · Cámara de comercio Citaciones COGRID Reuniones en sus instalaciones por Institución. Reuniones en forma centralizada por grupos. Reunion general todos los participantes",
+      "temas": "Planificacion Vigente · Amenazas · Riesgos · Equipamiento · Capacitaciones · Simulacros · Alertas decretadas pór el SENAPRED · Lecciones aprendidas sobre eventos",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-5",
+      "numero": 5,
+      "anio": 2026,
+      "titulo": "Catastro de grifos en el territorio comunal",
+      "fechaInicio": "2026-01-01",
+      "fechaTermino": "2026-05-31",
+      "comoDesarrollar": "Levantamiento de grifos ubicados en el territorio comunal Establecer ubicación Establecer operacionalidad Mantenimiento y cuidados",
+      "temas": "Cuantos tenemos · Donde estan · Estan operacionales · se pueden acceder a ellos · Conoce la comunidad su ubicación · Es necesario instalar mas",
+      "creadoPor": "u-1",
+      "creado": "2026-01-01T09:00:00"
+    },
+    {
+      "id": "ae-6",
+      "numero": 6,
+      "anio": 2026,
+      "titulo": "Realizar simulacros intersectoriales de los riesgos catalogados con alto nivel de importancia de la amenaza y/o vulnerabilidad, en los sectores mas expuestos",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-11-30",
+      "comoDesarrollar": "Determinar amanaza a simular Determinar lugar de la emergencia determinar actores involucrados Coordinar el simulacro con los actores involucrados, mas el sector, comunidad, colegio o lugar del desarrollo.",
+      "temas": "Incendio Estructural · Sismo · Riesgo Químico · Corte de agua · Anegamiento",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-7",
+      "numero": 7,
+      "anio": 2026,
+      "titulo": "Apoyar a la comunidad en la inspección de instalaciones para mitigar los riesgos asociados a incendios estructurales",
+      "fechaInicio": "2026-01-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Cartas de invitacion a trabajos con temas de RRD a comunidades y Villas sociales · Campañas de prevencion de incendios por juntas de vecinos · Trabajo coordinado con Departamento Comunitario DSP · Trabajo coordinado con Departamento Vivienda DIDECO · Campaña en colegios particulares",
+      "temas": "Levantamiento Condiciones de seguridad · Proposiciones de zonas de seguridad · Entrega de tripticos · Capacitación uso y manejo extintor · Capacitación incendio estructural · Elabotación plan de emergencias",
+      "creadoPor": "u-1",
+      "creado": "2026-01-01T09:00:00"
+    },
+    {
+      "id": "ae-8",
+      "numero": 8,
+      "anio": 2026,
+      "titulo": "Preparar y activar albergues temporales de menor magnitud, para la atención de victimas de desastres naturales y antrópicos",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Reunión inicial con UNCO Reunión con JJ.VV que cuentan con sedes Visitas a sedes Posible equipamiento Apoyos pertinentes de direcciones del municipio Apoyos pertinentes de CMDS Apoyos pertinentes de Defensa Civil Contar con un manuel de funcionamiento de albergues",
+      "temas": "Reuniones · Visitas Sedes · Selección de Sedes · Equipamiento a emplear · Personal para su funcionamiento · Otros",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-9",
+      "numero": 9,
+      "anio": 2026,
+      "titulo": "Capacitar a personal municipal y comunidad local, en técnicas de procedimientos, para actuar como equipos de primera respuesta post emergencia o desastres",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-12-31",
+      "comoDesarrollar": "Planificación y ejecución de cursos CERT (equipos de primera respuesta ante emergencias o desastres), con una ejecución conjunta con el SENAPRED Región Metropolitana, con la participación además de otros integrantes del COGRID · Selección de fechas · Selección de instructores · Selección de lugares para impartir teoria y practica · Licitar o ejecutar cursos · Evalaución · Revista despues de la acción",
+      "temas": "Ferchas · Lugar · Fondos · Programa · Evaluación · Informes · Otros",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-10",
+      "numero": 10,
+      "anio": 2026,
+      "titulo": "Desarrollar Plan de telecomunicaciones en emergencia",
+      "fechaInicio": "2026-03-01",
+      "fechaTermino": "2026-10-31",
+      "comoDesarrollar": "Desarrollo y puesta en practica de un sistema de comunicaciónes unificado a nivel comunal, teniendo como premisa un lenguaje comun, para todos los integrantes del SINAPRED Comunal · Reunión información · revisión sistema de comunicaciones de instituciones · mesas de trabajo · Visitas a terreno · Equipamiento disponibles · presentación propuesta · Evaluación · Revisión final y decreto",
+      "temas": "ordenes tecnica de comunicaciones de cada institución · Equipamiento de cada institución · frecuencias disponibles · Antenas y repetidores disponibles · Lenguaje empleado en emergencias · Otros",
+      "creadoPor": "u-1",
+      "creado": "2026-03-01T09:00:00"
+    },
+    {
+      "id": "ae-11",
+      "numero": 11,
+      "anio": 2026,
+      "titulo": "Generar formato de ficha de oportunidades de mejora para incorporarlos en el proceso de GRD",
+      "fechaInicio": "2026-01-01",
+      "fechaTermino": "2026-06-30",
+      "comoDesarrollar": "Crear una ficha que contenga a lo menos los siguientes puntos: · Tipo de evento · fecha · Lugar · Situacion economica del sector · Situacion de vulnerabilidad del sector · N° afectados (fallecidos, heridos, discapacitados, dependientes, con o sin red de apoyo · Implementacion FIBE · Problema detectado · propuesta de apoyo · Entrega de apoyo · Seguimiento · Fecha de control Reunión y mesas tecnicas con DIDECO Departamento Social",
+      "temas": "Incendios estructurales · sismos o terremotos · Remisión en masa · Inundaciones · Anegamientos · Corte de suministros básicos · Explosiones · Pandemias",
+      "creadoPor": "u-1",
+      "creado": "2026-01-01T09:00:00"
+    }
+  ],
+  "actividades": [
+    {
+      "id": "act-1",
+      "accionId": "ae-1",
+      "fecha": "2026-03-20",
+      "direccion": "Jardin Infantil Amapolas",
+      "objetivo": "Capacitación: Uso y manejo de extintores · N° Capacitados: 25",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-20T12:00:00"
+    },
+    {
+      "id": "act-2",
+      "accionId": "ae-1",
+      "fecha": "2026-04-24",
+      "direccion": "Jardin Infantil Mundo Maravilloso",
+      "objetivo": "Capacitación: Uso y manejo de extintores · N° Capacitados: 16",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-24T12:00:00"
+    },
+    {
+      "id": "act-3",
+      "accionId": "ae-2",
+      "fecha": "2026-01-13",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Informacion y recomendaciones por ola de calor extremo entre · el 16 y 20.ENE.2026, en las redes sociales del municipio.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-01-13T12:00:00"
+    },
+    {
+      "id": "act-4",
+      "accionId": "ae-3",
+      "fecha": "2026-04-07",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Reunión técnica con la Subgerencia de Operaciones de Aguas · Andinas, por modificaciones al protocolo de acuerdo ante · cortes de agua total o parcial en la comuna, que afectan a todos · los integrantes del SINAPRED Comunal.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-07T12:00:00"
+    },
+    {
+      "id": "act-5",
+      "accionId": "ae-4",
+      "fecha": "2026-03-30",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Reunión con entes directivos y prevencionistas de riesgos del Campus · Goméz Milla, relacionado con temas de prevención, preparación, mitigación y · respuesta, ante situaciones de emergencias que ocurran en el interior y · entorno de este campus. Trabajo conjunto y colaborativo entre ambas insti- · tuciones.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-30T12:00:00"
+    },
+    {
+      "id": "act-6",
+      "accionId": "ae-4",
+      "fecha": "2026-04-07",
+      "direccion": "Reunión con directiva de la Junta de Vecinos N°3 Arturo Prat, para tratar te-",
+      "objetivo": "mas relacionados con la prevención, preparación, mitigación y respuesta, · ante situaciones de emergencia que afecten a personas e infraestructura de · esa zona juridiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-07T12:00:00"
+    },
+    {
+      "id": "act-7",
+      "accionId": "ae-4",
+      "fecha": "2026-04-09",
+      "direccion": "Reunión con directiva de la Junta de vecinos N°29 Dr. Luis Bisquert, para tratar",
+      "objetivo": "temas relacionados con la prevención, preparación, mitigación y respuesta, · ante situaciones de emergencia que afecten a personas e infraestructura de · esa zona juridiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-09T12:00:00"
+    },
+    {
+      "id": "act-8",
+      "accionId": "ae-4",
+      "fecha": "2026-04-09",
+      "direccion": "Reunión con directiva de la Junta de Vecinos N°17 Villa Lo Valdivieso Norte,",
+      "objetivo": "para tratar temas relacionados con la prevención, preparación, mitigación y · respuesta, ante situaciones de emergencia que afecten a personas e infraes- · tructura de esa zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-09T12:00:00"
+    },
+    {
+      "id": "act-9",
+      "accionId": "ae-4",
+      "fecha": "2026-04-14",
+      "direccion": "Reunión con directiva de la Junta de Vecinos N°9 General Sucre 2,",
+      "objetivo": "para tratar temas relacionados con la prevención, preparación, mitigación y · respuesta, ante situaciones de emergencia que afecten a personas e infraes- · tructura de esa zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-14T12:00:00"
+    },
+    {
+      "id": "act-10",
+      "accionId": "ae-4",
+      "fecha": "2026-04-16",
+      "direccion": "Reunión con directiva de la junta d vecinos N°2 Amapolas, para tratar temas",
+      "objetivo": "relacionados con la prevención, preparación, mitigación y respuesta, ante · situaciones de emergencia que afecten a personas e infraesytructura de esa · zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-16T12:00:00"
+    },
+    {
+      "id": "act-11",
+      "accionId": "ae-4",
+      "fecha": "2026-04-27",
+      "direccion": "Reunión con directiva de la junta de vecinos N°11 Condel, para tratar temas",
+      "objetivo": "relacionados con la prevención, preparación, mitigación y respuesta, ante · situaciones de emergencia que afecten a personas e infraesytructura de esa · zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-27T12:00:00"
+    },
+    {
+      "id": "act-12",
+      "accionId": "ae-4",
+      "fecha": "2026-04-28",
+      "direccion": "Reunión con directiva de la junta de vecinos N°17 V Alemana, para tratar temas",
+      "objetivo": "relacionados con la prevención, preparación, mitigación y respuesta, ante · situaciones de emergencia que afecten a personas e infraesytructura de esa · zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-28T12:00:00"
+    },
+    {
+      "id": "act-13",
+      "accionId": "ae-4",
+      "fecha": "2026-04-29",
+      "direccion": "Reunión con directiva de la junta de vecinos N°19 Universidad, para tratar temas",
+      "objetivo": "relacionados con la prevención, preparación, mitigación y respuesta, ante · situaciones de emergencia que afecten a personas e infraesytructura de esa · zona jurisdiccional.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-29T12:00:00"
+    },
+    {
+      "id": "act-14",
+      "accionId": "ae-4",
+      "fecha": "2026-05-07",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Reunion con Departamnto de OO.CC de la DIDECO, specificamente con los gesto- · res territoriales, para informarles los trabajos de RRD que se realizan al tenor del · Plan de RRD y sus acciones estrategicas, dado su contacto pérmanente con las · comiunidades y juntas de vecinos a su cargo.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-05-07T12:00:00"
+    },
+    {
+      "id": "act-15",
+      "accionId": "ae-6",
+      "fecha": "2026-04-22",
+      "direccion": "Jardin Infantil Tierra de Niños",
+      "objetivo": "Simulacro Evacuacion por Incendio Estructural · Número de Evacuados: 103 (Docentes, auxiliares, alumnos y apoderados) · Evaluadores: 4 (3 GRD y 1 DIGEPER)",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-22T12:00:00"
+    },
+    {
+      "id": "act-16",
+      "accionId": "ae-6",
+      "fecha": "2026-04-29",
+      "direccion": "Jardin Infantil Areas Verdes",
+      "objetivo": "Simulacro Evacuacion por Incendio Estructural · Número de Evacuados: 86 (Docentes, auxiliares, alumnos y apoderados) · Evaluadores: 4 (3 GRD y 1 DIGEPER)",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-29T12:00:00"
+    },
+    {
+      "id": "act-17",
+      "accionId": "ae-6",
+      "fecha": "2026-04-29",
+      "direccion": "Jardin Infantil Campanita",
+      "objetivo": "Simulacro Evacuacion por Incendio Estructural · Número de Evacuados: 91 (Docentes, auxiliares, alumnos y apoderados) · Evaluadores: 4 (3 GRD y 1 DIGEPER)",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-29T12:00:00"
+    },
+    {
+      "id": "act-18",
+      "accionId": "ae-7",
+      "fecha": "2026-01-06",
+      "direccion": "Ritoque N°4540",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 60 · Público Objetivo : 210",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-01-06T12:00:00"
+    },
+    {
+      "id": "act-19",
+      "accionId": "ae-7",
+      "fecha": "2026-03-17",
+      "direccion": "Av. Suecia N°3660",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 8 · Público Objetivo: 28",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-17T12:00:00"
+    },
+    {
+      "id": "act-20",
+      "accionId": "ae-7",
+      "fecha": "2026-03-17",
+      "direccion": "Jardin Intantil Amapolas Pasaje 9 N°4850",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · Publico Objetivo: 130",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-17T12:00:00"
+    },
+    {
+      "id": "act-21",
+      "accionId": "ae-7",
+      "fecha": "2026-03-18",
+      "direccion": "Jardin infantil Mundo Maravilloso Quillagua N°3900",
+      "objetivo": "Levantamiento de CondicIones de Seguridad · Publico Objetivo: 120",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-18T12:00:00"
+    },
+    {
+      "id": "act-22",
+      "accionId": "ae-7",
+      "fecha": "2026-03-19",
+      "direccion": "Villaseca N°75",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 117 · Público Objetivo: 410",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-19T12:00:00"
+    },
+    {
+      "id": "act-23",
+      "accionId": "ae-7",
+      "fecha": "2026-03-20",
+      "direccion": "Jardin Infantil Campanita Eduardo Castillo Velasco N°4660",
+      "objetivo": "Levantamiento de CondicIones de Seguridad · Publico Objetivo: 165",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-20T12:00:00"
+    },
+    {
+      "id": "act-24",
+      "accionId": "ae-7",
+      "fecha": "2026-03-20",
+      "direccion": "Jardin Infantil Tierra de Niños Nueva Uno N°1626",
+      "objetivo": "Levantamiento de CondicIones de Seguridad · Publico Objetivo: 130",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-20T12:00:00"
+    },
+    {
+      "id": "act-25",
+      "accionId": "ae-7",
+      "fecha": "2026-03-24",
+      "direccion": "Sucre N°3020/3022",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 40 · Público Objetivo: 140",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-24T12:00:00"
+    },
+    {
+      "id": "act-26",
+      "accionId": "ae-7",
+      "fecha": "2026-03-30",
+      "direccion": "Chile España N°120",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 103 · Público Objetivo: 361",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-30T12:00:00"
+    },
+    {
+      "id": "act-27",
+      "accionId": "ae-7",
+      "fecha": "2026-03-31",
+      "direccion": "Hernan Cortes N°2939",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 34 · Público Objetivo: 120",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-03-31T12:00:00"
+    },
+    {
+      "id": "act-28",
+      "accionId": "ae-7",
+      "fecha": "2026-04-01",
+      "direccion": "Jardin infantil Areas Verdes Guillermo Mann N°1355",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · Público Objetivo: 230",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-01T12:00:00"
+    },
+    {
+      "id": "act-29",
+      "accionId": "ae-7",
+      "fecha": "2026-04-02",
+      "direccion": "Pedro Lautaro Ferrer N°2945",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 72 · Público Objetivo: 252",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-02T12:00:00"
+    },
+    {
+      "id": "act-30",
+      "accionId": "ae-7",
+      "fecha": "2026-04-15",
+      "direccion": "Exequiel Fernandez N°1670",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 72 · Público Objetivo: 252",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-15T12:00:00"
+    },
+    {
+      "id": "act-31",
+      "accionId": "ae-7",
+      "fecha": "2026-04-16",
+      "direccion": "Jose Pedro Alessandri N°1295",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 100 · Público Objetivo: 350",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-16T12:00:00"
+    },
+    {
+      "id": "act-32",
+      "accionId": "ae-7",
+      "fecha": "2026-04-21",
+      "direccion": "Villa Real Grecia",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 208 · Público Objetivo: 728",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-21T12:00:00"
+    },
+    {
+      "id": "act-33",
+      "accionId": "ae-7",
+      "fecha": "2026-04-23",
+      "direccion": "Villa Lo Valdivieso Norte",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 216 · Público Objetivo: 756",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-23T12:00:00"
+    },
+    {
+      "id": "act-34",
+      "accionId": "ae-7",
+      "fecha": "2026-04-27",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · Suecia 2970 - 2980 · N° Departamentos: 72 · Público Objetivo: 252",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-27T12:00:00"
+    },
+    {
+      "id": "act-35",
+      "accionId": "ae-7",
+      "fecha": "2026-04-28",
+      "direccion": "Jose Luis araneda N°92",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 24 · Público Objetivo: 84",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-28T12:00:00"
+    },
+    {
+      "id": "act-36",
+      "accionId": "ae-7",
+      "fecha": "2026-04-29",
+      "direccion": "José pedro Alessandri N°1901 - 1923",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 44 · Público Objetivo: 154",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-29T12:00:00"
+    },
+    {
+      "id": "act-37",
+      "accionId": "ae-7",
+      "fecha": "2026-04-30",
+      "direccion": "Los Alerces N°3330",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 192 · Público Objetivo: 672",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-30T12:00:00"
+    },
+    {
+      "id": "act-38",
+      "accionId": "ae-7",
+      "fecha": "2026-05-08",
+      "direccion": "Exequiel Fernandez N°1484",
+      "objetivo": "Levantamiento de Condiciones de Seguridad · N° Departamentos: 40 · Público Objetivo: 140",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-05-08T12:00:00"
+    },
+    {
+      "id": "act-39",
+      "accionId": "ae-11",
+      "fecha": "2026-04-13",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "Reunión inicial con alumnos del programa CLIC + Programa Puentes UC y · la Dirección de Gestión del Riesgo de Desastres, con la finalidad de desa- · rrollar un software de gestión y manejo de la información, asociadas · al Plan de RRD y al Plan de Emergencia.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-13T12:00:00"
+    },
+    {
+      "id": "act-40",
+      "accionId": "ae-11",
+      "fecha": "2026-04-30",
+      "direccion": "Comuna de Ñuñoa",
+      "objetivo": "1ra. Reunion tecnica de trabajo con programa CLIC + Programa Puentes UC., · y la Dirección de GRD Municipal, determinandose lo siguiente: · 7 estudiantes conformaran el equipo de trabajo · Dia trabajo presencial miercoles de cada semana (13.00 a 17.00 horas) · GRD entregara los primeros insumos para el programa (planes, planillas, etc) · GRD habilitara una oficina para el trabajo del equipo CLIC · GRD entregará credenciales para faciliutar acceso y movimientos de los · alumnos en el municipio.",
+      "participantes": "",
+      "evidencia": [],
+      "creadoPor": "u-1",
+      "creado": "2026-04-30T12:00:00"
+    }
+  ],
+  "eventos": [
+    {
+      "id": "dev-1",
+      "folio": "EV-2026-001",
+      "tipoId": "te-1",
+      "fecha": "2026-05-12",
+      "sector": "Villa Frei",
+      "afectados": 38,
+      "instituciones": "Bomberos, SAMU, Seguridad Ciudadana",
+      "acciones": "Evacuación preventiva de 12 viviendas y habilitación de albergue temporal en sede vecinal.",
+      "creadoPor": "u-1",
+      "creado": "2026-05-12T08:40:00"
+    },
+    {
+      "id": "dev-2",
+      "folio": "EV-2026-002",
+      "tipoId": "te-2",
+      "fecha": "2026-04-03",
+      "sector": "Población Los Alerces",
+      "afectados": 12,
+      "instituciones": "Cuerpo de Bomberos de Ñuñoa, Carabineros 33ª Comisaría",
+      "acciones": "Coordinación con DIDECO para alojamiento de damnificados y catastro de daños.",
+      "creadoPor": "u-3",
+      "creado": "2026-04-03T22:15:00"
+    },
+    {
+      "id": "dev-3",
+      "folio": "EV-2026-003",
+      "tipoId": "te-3",
+      "fecha": "2026-06-08",
+      "sector": "Suárez Mujica",
+      "afectados": 25,
+      "instituciones": "Aseo y Ornato, Seguridad Ciudadana",
+      "acciones": "Despeje de árboles caídos y retiro de escombros en la vía pública.",
+      "creadoPor": "u-1",
+      "creado": "2026-06-08T07:05:00"
+    },
+    {
+      "id": "dev-4",
+      "folio": "EV-2026-004",
+      "tipoId": "te-6",
+      "fecha": "2026-03-20",
+      "sector": "Comité Esperanza",
+      "afectados": 60,
+      "instituciones": "DIDECO, Salud Municipal",
+      "acciones": "Activación de ayuda social y entrega de kits de aseo a familias afectadas.",
+      "creadoPor": "u-5",
+      "creado": "2026-03-20T10:30:00"
+    }
+  ],
+  "solicitudes": [
+    {
+      "id": "dsol-1",
+      "folio": "SOL-2026-001",
+      "medio": "Llamado telefónico — vecina del sector",
+      "descripcion": "Reporta anegamiento en el primer piso de su vivienda tras las lluvias.",
+      "respuesta": "Se despachó cuadrilla y se entregaron sacos de arena y polietileno.",
+      "estado": "atendida",
+      "eventoId": "dev-1",
+      "creadoPor": "u-1",
+      "creado": "2026-05-12T09:10:00"
+    },
+    {
+      "id": "dsol-2",
+      "folio": "SOL-2026-002",
+      "medio": "Presencial — Oficina de Partes",
+      "descripcion": "Junta de vecinos solicita apoyo para limpieza de pasajes anegados.",
+      "respuesta": "Se coordinó retiro de aguas y entrega de aserrín.",
+      "estado": "atendida",
+      "eventoId": "dev-1",
+      "creadoPor": "u-2",
+      "creado": "2026-05-12T11:45:00"
+    },
+    {
+      "id": "dsol-3",
+      "folio": "SOL-2026-003",
+      "medio": "Correo electrónico — Bomberos",
+      "descripcion": "Informan incendio estructural con familias damnificadas.",
+      "respuesta": "Se activó protocolo de ayuda y catastro de daños.",
+      "estado": "atendida",
+      "eventoId": "dev-2",
+      "creadoPor": "u-3",
+      "creado": "2026-04-03T23:00:00"
+    },
+    {
+      "id": "dsol-4",
+      "folio": "SOL-2026-004",
+      "medio": "WhatsApp municipal",
+      "descripcion": "Vecino reporta árbol caído bloqueando el paso peatonal.",
+      "respuesta": "",
+      "estado": "pendiente",
+      "eventoId": "dev-3",
+      "creadoPor": "u-1",
+      "creado": "2026-06-08T07:30:00"
+    },
+    {
+      "id": "dsol-5",
+      "folio": "SOL-2026-005",
+      "medio": "Formulario web",
+      "descripcion": "Solicitud de apoyo en mudanza por riesgo estructural en la vivienda.",
+      "respuesta": "",
+      "estado": "pendiente",
+      "eventoId": null,
+      "creadoPor": "u-5",
+      "creado": "2026-06-02T16:20:00"
+    },
+    {
+      "id": "dsol-6",
+      "folio": "SOL-2026-006",
+      "medio": "Derivación DIDECO",
+      "descripcion": "Familias del comité solicitan kits de aseo e insumos básicos.",
+      "respuesta": "Se entregaron kits de aseo y guantes.",
+      "estado": "atendida",
+      "eventoId": "dev-4",
+      "creadoPor": "u-5",
+      "creado": "2026-03-20T11:00:00"
+    }
+  ],
+  "entregaLinks": {
+    "en-1": "dsol-1",
+    "en-2": "dsol-2",
+    "en-3": "dsol-3",
+    "en-4": "dsol-6"
+  }
+}

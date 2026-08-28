@@ -1,0 +1,8 @@
+import { InsumoDetail } from "@/components/views/insumos"
+
+export const metadata = { title: "Insumo · DGRD Ñuñoa" }
+
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  return <InsumoDetail id={id} />
+}

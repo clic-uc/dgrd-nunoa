@@ -1,56 +1,63 @@
 import type { Metadata } from "next"
-import Image from "next/image"
-import { ShieldCheck } from "lucide-react"
+import { redirect } from "next/navigation"
 import { LoginForm } from "@/components/auth/login-form"
+import { I } from "@/components/icons"
+import { getSession } from "@/server/session"
 
 export const metadata: Metadata = {
   title: "Iniciar sesión · DGRD Ñuñoa",
   description: "Acceso al sistema interno de la Dirección de Gestión de Riesgo y Desastres de Ñuñoa.",
 }
 
-export default function LoginPage() {
-  return (
-    <div className="bg-surface grid min-h-svh flex-1 lg:grid-cols-[1.05fr_1fr]">
-      {/* Panel institucional */}
-      <section className="bg-ink relative hidden flex-col justify-between overflow-hidden px-13 py-11 text-white lg:flex">
-        <Image
-          src="/logo-mark-yellow.svg"
-          alt=""
-          width={360}
-          height={360}
-          unoptimized
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-15 -right-18 w-[360px] opacity-[0.06]"
-        />
-        <Image
-          src="/logo-mark-yellow.svg"
-          alt=""
-          width={420}
-          height={420}
-          unoptimized
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-30 -left-28 w-[420px] opacity-[0.04]"
-        />
+export default async function LoginPage() {
+  if (await getSession()) redirect("/resumen")
 
-        <Image
+  return (
+    <div className="login-shell">
+      {/* Panel institucional */}
+      <section className="login-brand">
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG decorativo servido desde /public */}
+        <img
+          src="/logo-mark-yellow.svg"
+          alt=""
+          aria-hidden="true"
+          style={{ position: "absolute", right: -70, top: -60, width: 360, opacity: 0.06, pointerEvents: "none" }}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG decorativo servido desde /public */}
+        <img
+          src="/logo-mark-yellow.svg"
+          alt=""
+          aria-hidden="true"
+          style={{ position: "absolute", left: -110, bottom: -120, width: 420, opacity: 0.04, pointerEvents: "none" }}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG servido desde /public */}
+        <img
           src="/logo-full-white.svg"
           alt="Municipalidad de Ñuñoa"
-          width={107}
-          height={46}
-          unoptimized
-          priority
-          className="relative h-[46px] w-auto"
+          style={{ height: 46, position: "relative", width: "auto" }}
         />
 
-        <div className="relative max-w-[440px]">
-          <div className="bg-brand/15 text-brand mb-5 inline-flex items-center gap-2 rounded-full px-3 py-[5px] text-xs font-semibold">
-            <ShieldCheck className="size-3.5" />
-            Sistema interno · Acceso restringido
+        <div style={{ position: "relative", maxWidth: 440 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "rgba(242,183,5,.14)",
+              color: "var(--yellow)",
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "5px 12px",
+              borderRadius: 99,
+              marginBottom: 22,
+            }}
+          >
+            <I.ShieldCheck size={14} /> Sistema interno · Acceso restringido
           </div>
-          <h2 className="text-[30px] leading-[1.18] font-semibold tracking-tight">
+          <h1 style={{ fontSize: 30, lineHeight: 1.18, margin: "0 0 14px", fontWeight: 600, letterSpacing: "-.01em" }}>
             Dirección de Gestión de Riesgo y Desastres
-          </h2>
-          <p className="text-ink-muted mt-3.5 text-[15px] leading-relaxed">
+          </h1>
+          <p style={{ color: "var(--slate-400)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>
             Registro y seguimiento de solicitudes, eventos de emergencia, entregas de insumos y el Plan de Reducción del
             Riesgo de Desastres de la comuna.
           </p>
@@ -58,7 +65,7 @@ export default function LoginPage() {
       </section>
 
       {/* Panel de formulario */}
-      <section className="flex items-center justify-center px-6 py-10 sm:px-8">
+      <section className="login-form-pane">
         <LoginForm />
       </section>
     </div>
