@@ -50,15 +50,23 @@ Las mutaciones son server actions que revalidan el layout.
 **El schema habla inglés, la UI español.** La traducción ocurre una sola vez, en
 `src/server/data.ts`, para que las vistas portadas no tuvieran que reescribirse.
 
-**Evidencia en disco local.** `EVIDENCE_DIR`, fuera de `public/`, servida por
-`/api/evidencia/[id]` con sesión validada. `Evidence.key` mantiene el contrato
-para migrar a S3 cambiando solo `src/server/storage.ts`.
+**Evidencia: Vercel Blob en producción, disco en local.** `src/server/storage.ts`
+elige backend según haya o no `BLOB_READ_WRITE_TOKEN`. En serverless solo sirve
+Blob — el filesystem es de solo lectura salvo `/tmp`, que además es efímero y no
+se comparte entre instancias.
 
-> ⚠️ **No funciona en serverless.** En Vercel el filesystem es de solo lectura
-> salvo `/tmp`, que además es efímero y no se comparte entre instancias: las
-> subidas fallan en tiempo de ejecución (el resto del sistema funciona bien).
-> Para desplegar con evidencia operativa hay que reemplazar
-> `src/server/storage.ts` por un blob store.
+La lectura y el borrado no se deciden por el entorno sino por el valor de
+`Evidence.key` (URL → Blob, nombre de archivo → disco). Así una fila escrita en
+un backend se sigue resolviendo en ese backend aunque el entorno cambie después,
+y no quedan filas huérfanas al alternar.
+
+El store es **privado**: el objeto no es accesible por URL, leerlo exige el token.
+`/api/evidencia/[id]` lo resuelve en el servidor y transmite los bytes tras validar
+la sesión, así que hay dos capas — sesión válida y token del store. El costo es que
+el archivo pasa por la función, asumible con el tope de 10 MB.
+
+En `Evidence.key` se guarda el pathname con prefijo `blob:`, no una URL: sobrevive
+a un cambio de store y distingue sin ambigüedad de una key de disco.
 
 ## Diferencias respecto al mockup
 

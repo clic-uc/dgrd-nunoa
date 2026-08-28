@@ -1,13 +1,32 @@
 import { createHash, randomUUID } from "node:crypto"
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises"
 import path from "node:path"
+import { del, get, put } from "@vercel/blob"
 
 /**
- * Almacenamiento en disco de la evidencia de las actividades.
+ * Almacenamiento de la evidencia de las actividades.
  *
- * Vive FUERA de public/: los archivos se sirven por /api/evidencia/[id], que
- * valida sesión antes de responder. En producción esto se reemplaza por S3
- * manteniendo el mismo contrato (Evidence.key sigue siendo la referencia).
+ * Dos backends:
+ *
+ * · **Vercel Blob (privado)** cuando existe BLOB_READ_WRITE_TOKEN (lo inyecta
+ *   Vercel al conectar el store). Es el único que sirve en serverless: allí el
+ *   filesystem es de solo lectura salvo /tmp, y /tmp es efímero y no se
+ *   comparte entre instancias.
+ * · **Disco local** en cualquier otro caso, bajo EVIDENCE_DIR. Mantiene el
+ *   desarrollo local funcionando sin depender de una cuenta de Vercel.
+ *
+ * `access: "private"` significa que el objeto no es accesible por URL: leerlo
+ * exige el token del store. Sumado a que /api/evidencia/[id] valida la sesión,
+ * el archivo queda protegido aunque su ruta se filtre.
+ *
+ * En `Evidence.key` se guarda el *pathname* dentro del store con el prefijo
+ * `blob:`, no una URL: sobrevive a un cambio de store y distingue sin
+ * ambigüedad de una key de disco (un nombre de archivo suelto).
+ *
+ * El backend de lectura y borrado se decide por el valor de la key, no por el
+ * entorno: una fila escrita en disco se sigue leyendo del disco aunque después
+ * aparezca el token, y viceversa. Así no hay filas huérfanas al cambiar de
+ * backend.
  */
 
 const MAX_FILE = 10 * 1024 * 1024 // 10 MB
@@ -19,14 +38,15 @@ export const MIME_POR_TIPO: Record<string, string> = {
   pdf: "application/pdf",
 }
 
-/**
- * Raíz de las subidas, resuelta en tiempo de ejecución desde EVIDENCE_DIR.
- *
- * Los `turbopackIgnore` de este módulo son necesarios: la ruta depende de una
- * variable de entorno, así que el tracer de Next no puede acotar qué archivos
- * se leen y, sin la anotación, incluye el proyecto completo en el bundle del
- * servidor. Ninguna de estas rutas se resuelve en build.
- */
+const BLOB_PREFIX = "blob:"
+
+const blobToken = () => process.env.BLOB_READ_WRITE_TOKEN?.trim() || undefined
+
+/** Acepta también URLs absolutas: `get`/`del` las resuelven igual que un pathname. */
+const esBlob = (key: string) => key.startsWith(BLOB_PREFIX) || key.startsWith("http://") || key.startsWith("https://")
+
+const refBlob = (key: string) => (key.startsWith(BLOB_PREFIX) ? key.slice(BLOB_PREFIX.length) : key)
+
 function baseDir(): string {
   const dir = process.env.EVIDENCE_DIR?.trim() || ".uploads/evidencia"
   return path.isAbsolute(dir) ? dir : path.join(/* turbopackIgnore: true */ process.cwd(), dir)
@@ -49,25 +69,56 @@ export async function guardarEvidencia(file: File): Promise<ArchivoGuardado> {
   if (file.size === 0) throw new Error(`${file.name}: el archivo está vacío.`)
 
   const buf = Buffer.from(await file.arrayBuffer())
-  const key = `${randomUUID()}.${ext === "jpeg" ? "jpg" : ext}`
+  const tipo = tipoArchivo(file.name)
+  const nombreEnStore = `${randomUUID()}.${ext === "jpeg" ? "jpg" : ext}`
+  const token = blobToken()
+
+  let key: string
+  if (token) {
+    const { pathname } = await put(`evidencia/${nombreEnStore}`, buf, {
+      access: "private",
+      contentType: MIME_POR_TIPO[tipo],
+      // Entropía extra en la ruta: no debe ser deducible del id de la fila.
+      addRandomSuffix: true,
+      token,
+    })
+    key = BLOB_PREFIX + pathname
+  } else {
+    key = await guardarEnDisco(nombreEnStore, buf)
+  }
+
+  return { key, nombre: file.name, tipo, size: file.size }
+}
+
+async function guardarEnDisco(nombre: string, buf: Buffer): Promise<string> {
   const dir = baseDir()
   await mkdir(dir, { recursive: true })
-  await writeFile(path.join(/* turbopackIgnore: true */ dir, key), buf)
-
-  return { key, nombre: file.name, tipo: tipoArchivo(file.name), size: file.size }
+  await writeFile(path.join(/* turbopackIgnore: true */ dir, nombre), buf)
+  return nombre
 }
 
 export async function leerEvidencia(key: string): Promise<{ buf: Buffer; etag: string }> {
+  const buf = esBlob(key) ? await leerDeBlob(key) : await leerDeDisco(key)
+  return { buf, etag: `"${createHash("sha1").update(buf).digest("hex")}"` }
+}
+
+async function leerDeBlob(key: string): Promise<Buffer> {
+  const res = await get(refBlob(key), { access: "private", token: blobToken() })
+  if (!res?.stream) throw new Error("El archivo ya no está disponible en el store.")
+  return Buffer.from(await new Response(res.stream).arrayBuffer())
+}
+
+async function leerDeDisco(key: string): Promise<Buffer> {
   // `key` viene de la base, pero se normaliza igual: nunca debe escapar del
   // directorio de subidas.
   const safe = path.basename(key)
-  const buf = await readFile(path.join(/* turbopackIgnore: true */ baseDir(), safe))
-  return { buf, etag: `"${createHash("sha1").update(buf).digest("hex")}"` }
+  return readFile(path.join(/* turbopackIgnore: true */ baseDir(), safe))
 }
 
 export async function borrarEvidencia(key: string): Promise<void> {
   try {
-    await unlink(path.join(/* turbopackIgnore: true */ baseDir(), path.basename(key)))
+    if (esBlob(key)) await del(refBlob(key), { token: blobToken() })
+    else await unlink(path.join(/* turbopackIgnore: true */ baseDir(), path.basename(key)))
   } catch {
     // El archivo ya no está: la fila de la base manda, no bloqueamos el borrado.
   }

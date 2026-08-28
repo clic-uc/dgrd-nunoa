@@ -82,10 +82,38 @@ pnpm db:studio      # explorar los datos en el navegador
 
 ## Evidencia del Plan RRD
 
-Las actividades admiten adjuntos (JPG, PNG, PDF · hasta 10 MB). Los archivos se guardan en
-disco bajo `EVIDENCE_DIR` (`.uploads/evidencia` por defecto), **fuera de `public/`**, y se
-sirven por `/api/evidencia/[id]`, que exige sesión. `Evidence.key` guarda la referencia; al
-migrar a S3 se reemplaza `src/server/storage.ts` sin tocar el resto.
+Las actividades admiten adjuntos (JPG, PNG, PDF · hasta 10 MB). El backend de almacenamiento
+se elige solo en `src/server/storage.ts`:
+
+- **Vercel Blob**, con el store en modo **privado**, si existe `BLOB_READ_WRITE_TOKEN`
+  (Vercel lo inyecta al conectar el store al proyecto). Es el único que funciona en serverless.
+- **Disco local** en cualquier otro caso, bajo `EVIDENCE_DIR`, fuera de `public/`.
+
+En ambos casos los archivos se sirven por `/api/evidencia/[id]`, que valida la sesión antes de
+responder. Con el store privado el objeto no es accesible por URL —leerlo exige el token—, así
+que el archivo queda protegido incluso si su ruta se filtrara.
+
+`Evidence.key` guarda el pathname dentro del store con prefijo `blob:` (no una URL), lo que
+sobrevive a un cambio de store y distingue sin ambigüedad de una key de disco.
+
+## Despliegue en Vercel
+
+Variables de entorno del proyecto:
+
+| Variable               | Valor                                              |
+| ---------------------- | -------------------------------------------------- |
+| `DATABASE_URL`         | Neon **pooled** (host con `-pooler`)               |
+| `DIRECT_URL`           | Neon **unpooled**                                  |
+| `BETTER_AUTH_SECRET`   | `openssl rand -base64 32`                          |
+| `BETTER_AUTH_URL`      | El dominio real `https://…` — **no** `localhost`   |
+| `ALLOWED_EMAIL_DOMAIN` | Vacío para no restringir; `nunoa.cl` en producción |
+
+Además, conecta un **Blob store privado** al proyecto (Storage → Blob): eso inyecta
+`BLOB_READ_WRITE_TOKEN` y habilita la subida de evidencia.
+
+El build corre `prisma generate` antes de `next build`, porque el cliente se genera dentro de
+`src/generated/prisma` y está gitignored. Las migraciones **no** se aplican en el build: corre
+`pnpm db:migrate` contra la base antes de desplegar cambios de schema.
 
 ## Convenciones
 
