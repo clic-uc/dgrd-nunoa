@@ -40,7 +40,37 @@ export const MIME_POR_TIPO: Record<string, string> = {
 
 const BLOB_PREFIX = "blob:"
 
-const blobToken = () => process.env.BLOB_READ_WRITE_TOKEN?.trim() || undefined
+/**
+ * En Vercel el filesystem es de solo lectura salvo /tmp, así que el backend de
+ * disco no es una alternativa válida: si falta el token hay que fallar con un
+ * mensaje accionable, no intentar escribir y morir con un ENOENT en /var/task.
+ *
+ * VERCEL_ENV === "development" es `vercel dev`, que sí corre sobre disco real.
+ */
+const esServerless = () => !!process.env.VERCEL && process.env.VERCEL_ENV !== "development"
+
+/**
+ * Token del Blob store.
+ *
+ * Vercel usa BLOB_READ_WRITE_TOKEN por defecto, pero renombra la variable a
+ * `<PREFIJO>_READ_WRITE_TOKEN` cuando el store se conecta con un prefijo
+ * propio o cuando hay más de uno en el proyecto. Por eso, si el nombre estándar
+ * no está, se acepta cualquier variable con ese sufijo.
+ */
+function blobToken(): string | undefined {
+  const estandar = process.env.BLOB_READ_WRITE_TOKEN?.trim()
+  if (estandar) return estandar
+
+  for (const [nombre, valor] of Object.entries(process.env)) {
+    if (nombre.endsWith("_READ_WRITE_TOKEN") && valor?.trim()) return valor.trim()
+  }
+  return undefined
+}
+
+const ERROR_SIN_STORE =
+  "El almacenamiento de archivos no está configurado: falta BLOB_READ_WRITE_TOKEN. " +
+  "Conecta el Blob store al proyecto en Vercel (Storage → Blob → Connect Project) " +
+  "y vuelve a desplegar para que la variable llegue al runtime."
 
 /** Acepta también URLs absolutas: `get`/`del` las resuelven igual que un pathname. */
 const esBlob = (key: string) => key.startsWith(BLOB_PREFIX) || key.startsWith("http://") || key.startsWith("https://")
@@ -72,6 +102,8 @@ export async function guardarEvidencia(file: File): Promise<ArchivoGuardado> {
   const tipo = tipoArchivo(file.name)
   const nombreEnStore = `${randomUUID()}.${ext === "jpeg" ? "jpg" : ext}`
   const token = blobToken()
+
+  if (!token && esServerless()) throw new Error(ERROR_SIN_STORE)
 
   let key: string
   if (token) {
@@ -109,6 +141,7 @@ async function leerDeBlob(key: string): Promise<Buffer> {
 }
 
 async function leerDeDisco(key: string): Promise<Buffer> {
+  if (esServerless()) throw new Error(ERROR_SIN_STORE)
   // `key` viene de la base, pero se normaliza igual: nunca debe escapar del
   // directorio de subidas.
   const safe = path.basename(key)
