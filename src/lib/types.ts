@@ -19,6 +19,8 @@ export type Usuario = {
   rol: Rol
   estado: EstadoUsuario
   creado: string
+  /** Registros creados por esta cuenta. Si es > 0 no se puede eliminar (onDelete: Restrict). */
+  registros: number
 }
 
 export type TipoEvento = {

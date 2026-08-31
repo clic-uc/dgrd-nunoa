@@ -62,6 +62,39 @@ export async function cambiarEstadoUsuario(id: string, activo: boolean) {
   })
 }
 
+/**
+ * Elimina definitivamente una cuenta. Solo cuentas inactivas y sin historial:
+ * las relaciones `creator` del schema son `onDelete: Restrict`, así que se cuenta
+ * antes para devolver un mensaje claro en vez del P2003 genérico.
+ */
+export async function eliminarUsuario(id: string) {
+  return run(async () => {
+    const me = await requireAdmin()
+    if (id === me.id) throw new Error("No puedes eliminar tu propia cuenta.")
+
+    const u = await prisma.user.findUniqueOrThrow({ where: { id }, select: { banned: true } })
+    if (!u.banned) throw new Error("Solo se pueden eliminar cuentas inactivas. Desactívala primero.")
+
+    const counts = await Promise.all([
+      prisma.eventType.count({ where: { createdBy: id } }),
+      prisma.supply.count({ where: { createdBy: id } }),
+      prisma.event.count({ where: { createdBy: id } }),
+      prisma.request.count({ where: { createdBy: id } }),
+      prisma.delivery.count({ where: { createdBy: id } }),
+      prisma.strategicAction.count({ where: { createdBy: id } }),
+      prisma.activity.count({ where: { createdBy: id } }),
+      prisma.evidence.count({ where: { createdBy: id } }),
+    ])
+    const n = counts.reduce((a, b) => a + b, 0)
+    if (n > 0)
+      throw new Error(
+        `La cuenta tiene ${n} registro${n === 1 ? "" : "s"} en el historial. Solo puede permanecer inactiva.`,
+      )
+
+    await auth.api.removeUser({ body: { userId: id }, headers: await headers() })
+  })
+}
+
 export async function restablecerPassword(id: string, password: string) {
   return run(async () => {
     await requireAdmin()

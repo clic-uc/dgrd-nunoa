@@ -21,16 +21,23 @@ import {
 import { I } from "@/components/icons"
 import { fmtDate, initials } from "@/lib/format"
 import { useApp } from "@/components/app/provider"
-import { cambiarEstadoUsuario, crearUsuario, editarUsuario, restablecerPassword } from "@/server/actions/admin"
+import {
+  cambiarEstadoUsuario,
+  crearUsuario,
+  editarUsuario,
+  eliminarUsuario,
+  restablecerPassword,
+} from "@/server/actions/admin"
 import type { Rol, Usuario } from "@/lib/types"
 
 export function UsuariosList() {
   const app = useApp()
   const [q, setQ] = useState("")
-  const [estadoFiltro, setEstadoFiltro] = useState<"todos" | "activo" | "inactivo">("todos")
+  const [estadoFiltro, setEstadoFiltro] = useState<"activo" | "inactivo" | "todos">("activo")
   const [form, setForm] = useState<{ mode: "create" | "edit"; data?: Usuario } | null>(null)
   const [pass, setPass] = useState<Usuario | null>(null)
   const [estado, setEstado] = useState<Usuario | null>(null)
+  const [borrar, setBorrar] = useState<Usuario | null>(null)
 
   const rows = app.data.usuarios
     .filter((u) => (estadoFiltro === "todos" ? true : u.estado === estadoFiltro))
@@ -38,8 +45,9 @@ export function UsuariosList() {
     .sort((a, b) => a.nombre.localeCompare(b.nombre))
 
   const counts = {
-    todos: app.data.usuarios.length,
     activos: app.data.usuarios.filter((u) => u.estado === "activo").length,
+    inactivos: app.data.usuarios.filter((u) => u.estado === "inactivo").length,
+    todos: app.data.usuarios.length,
   }
 
   return (
@@ -57,14 +65,14 @@ export function UsuariosList() {
 
       <div className="toolbar">
         <div className="seg">
-          <button className={estadoFiltro === "todos" ? "on" : ""} onClick={() => setEstadoFiltro("todos")}>
-            Todos <span className="count-pill">{counts.todos}</span>
-          </button>
           <button className={estadoFiltro === "activo" ? "on" : ""} onClick={() => setEstadoFiltro("activo")}>
             Activos <span className="count-pill">{counts.activos}</span>
           </button>
           <button className={estadoFiltro === "inactivo" ? "on" : ""} onClick={() => setEstadoFiltro("inactivo")}>
-            Inactivos
+            Inactivos <span className="count-pill">{counts.inactivos}</span>
+          </button>
+          <button className={estadoFiltro === "todos" ? "on" : ""} onClick={() => setEstadoFiltro("todos")}>
+            Todos <span className="count-pill">{counts.todos}</span>
           </button>
         </div>
         <div className="toolbar__spacer" />
@@ -140,6 +148,19 @@ export function UsuariosList() {
                         >
                           {u.estado === "activo" ? <I.Ban /> : <I.RotateCcw />}
                         </button>
+                        {estadoFiltro === "inactivo" && (
+                          <button
+                            className="icon-btn icon-btn--danger"
+                            title={
+                              u.registros > 0
+                                ? "No se puede eliminar: la cuenta tiene registros en el historial"
+                                : "Eliminar usuario"
+                            }
+                            onClick={() => setBorrar(u)}
+                          >
+                            <I.Trash />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -153,6 +174,7 @@ export function UsuariosList() {
       {form && <UsuarioForm mode={form.mode} data={form.data} onClose={() => setForm(null)} />}
       {pass && <PasswordModal u={pass} onClose={() => setPass(null)} />}
       {estado && <EstadoModal u={estado} onClose={() => setEstado(null)} />}
+      {borrar && <EliminarModal u={borrar} onClose={() => setBorrar(null)} />}
     </div>
   )
 }
@@ -391,5 +413,112 @@ function EstadoModal({ u, onClose }: { u: Usuario; onClose: () => void }) {
       }}
       onClose={onClose}
     />
+  )
+}
+
+/**
+ * Borrado definitivo. Estilo GitHub: hay que escribir el correo de la cuenta para
+ * habilitar el botón. Si la cuenta tiene historial (relaciones `onDelete: Restrict`)
+ * el modal abre en modo bloqueado y solo explica por qué no se puede.
+ */
+function EliminarModal({ u, onClose }: { u: Usuario; onClose: () => void }) {
+  const app = useApp()
+  const [texto, setTexto] = useState("")
+  const [busy, setBusy] = useState(false)
+  const bloqueado = u.registros > 0
+  const coincide = texto.trim().toLowerCase() === u.correo.toLowerCase()
+
+  const confirmar = async () => {
+    if (!coincide) return
+    setBusy(true)
+    const res = await app.run(() => eliminarUsuario(u.id), {
+      kind: "danger",
+      title: "Usuario eliminado",
+      text: `${u.nombre} ${u.apellido}`,
+    })
+    setBusy(false)
+    if (res !== null) onClose()
+  }
+
+  return (
+    <Modal
+      size="sm"
+      onClose={onClose}
+      title={bloqueado ? "No se puede eliminar" : "Eliminar usuario"}
+      sub={<span className="mono">{u.correo}</span>}
+      icon={
+        <div className={`confirm-icon confirm-icon--${bloqueado ? "warn" : "danger"}`}>
+          {bloqueado ? <I.AlertTriangle size={20} /> : <I.Trash size={20} />}
+        </div>
+      }
+      footer={
+        bloqueado ? (
+          <button className="btn btn--secondary" onClick={onClose}>
+            Entendido
+          </button>
+        ) : (
+          <>
+            <button className="btn btn--secondary" onClick={onClose} disabled={busy}>
+              Cancelar
+            </button>
+            <button className="btn btn--danger" onClick={confirmar} disabled={!coincide || busy}>
+              {busy ? "Eliminando…" : "Eliminar usuario"}
+            </button>
+          </>
+        )
+      }
+    >
+      <div className="modal__body">
+        <p className="muted" style={{ margin: "0 0 14px", fontSize: 13.5, lineHeight: 1.6 }}>
+          {bloqueado ? (
+            <>
+              <b style={{ color: "var(--ink)" }}>
+                {u.nombre} {u.apellido}
+              </b>{" "}
+              creó {u.registros} registro{u.registros === 1 ? "" : "s"} en el sistema. La cuenta debe conservarse para
+              mantener la trazabilidad del historial.
+            </>
+          ) : (
+            <>
+              Vas a eliminar definitivamente la cuenta de{" "}
+              <b style={{ color: "var(--ink)" }}>
+                {u.nombre} {u.apellido}
+              </b>
+              .
+            </>
+          )}
+        </p>
+        <div className="warn-box" style={{ marginBottom: bloqueado ? 0 : 16 }}>
+          <I.AlertTriangle size={17} />
+          <div>
+            {bloqueado ? (
+              <>Puedes dejarla inactiva: no podrá iniciar sesión y sus registros siguen atribuidos a ella.</>
+            ) : (
+              <>Esta acción no se puede deshacer: se borran la cuenta y sus sesiones abiertas.</>
+            )}
+          </div>
+        </div>
+        {!bloqueado && (
+          <Field
+            label="Para confirmar, escribe el correo de la cuenta"
+            hint={
+              <>
+                Escribe <span className="mono">{u.correo}</span>
+              </>
+            }
+          >
+            <Input
+              value={texto}
+              onChange={(e) => setTexto(e.target.value)}
+              autoComplete="off"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && coincide && !busy) confirmar()
+              }}
+            />
+          </Field>
+        )}
+      </div>
+    </Modal>
   )
 }

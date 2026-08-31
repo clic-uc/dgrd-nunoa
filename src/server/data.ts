@@ -39,6 +39,15 @@ export async function loadAppData(): Promise<AppData> {
     prisma.activity.findMany({ orderBy: { date: "desc" }, include: { evidence: true } }),
   ])
 
+  // Autoría: cuántos registros creó cada cuenta. Todas las relaciones `creator` del
+  // schema son `onDelete: Restrict`, así que este conteo es lo que decide si una
+  // cuenta se puede eliminar. Se calcula sobre las filas ya cargadas — sin queries extra.
+  const autoria = new Map<string, number>()
+  const contar = (id: string) => autoria.set(id, (autoria.get(id) ?? 0) + 1)
+  for (const r of [...eventTypes, ...supplies, ...events, ...requests, ...deliveries, ...actions, ...activities])
+    contar(r.createdBy)
+  for (const a of activities) for (const e of a.evidence) contar(e.createdBy)
+
   const usuarios: Usuario[] = users.map((u) => {
     const { nombre, apellido } = splitName(u.name, (u as { lastName?: string | null }).lastName)
     return {
@@ -49,6 +58,7 @@ export async function loadAppData(): Promise<AppData> {
       rol: u.role === "admin" ? "admin" : "regular",
       estado: u.banned ? "inactivo" : "activo",
       creado: u.createdAt.toISOString(),
+      registros: autoria.get(u.id) ?? 0,
     }
   })
 
