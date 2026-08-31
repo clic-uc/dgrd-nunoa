@@ -1464,7 +1464,8 @@
 .repeater__head,
 .repeater__row {
   display: grid;
-  grid-template-columns: 1fr 120px 96px 40px;
+  /* la 3a columna alterna entre el tag de unidad y un select (rollo/corte) */
+  grid-template-columns: 1fr 110px 132px 40px;
   gap: 10px;
   align-items: center;
   padding: 9px 12px;

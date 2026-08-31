@@ -24,6 +24,7 @@ import { fmtDate, fmtDateLong, fmtDateTime, initials, todayISO } from "@/lib/for
 import { useApp } from "@/components/app/provider"
 import { SectionTabs } from "@/components/app/section-tabs"
 import { crearEntrega, editarEntrega, eliminarEntrega } from "@/server/actions/emergencias"
+import { agruparInsumos, etiquetaInsumo } from "@/lib/insumos"
 import type { Entrega } from "@/lib/types"
 
 /* ---------------- Presets de periodo ---------------- */
@@ -194,7 +195,7 @@ export function EntregasList() {
                   <option value="todos">Cualquier insumo</option>
                   {insumosCat.map((x) => (
                     <option key={x.id} value={x.id}>
-                      {x.tipo}
+                      {etiquetaInsumo(x, app.data.insumos)}
                     </option>
                   ))}
                 </Select>
@@ -583,7 +584,10 @@ export function EntregaDetail({ id, embedded, onClose }: { id: string; embedded?
 }
 
 /* ---------------- Form con repeater de insumos ---------------- */
-type ItemDraft = { insumoId: string; cantidad: string }
+// El tipo se guarda aparte del id porque un tipo con varias unidades
+// (Polietileno rollo/corte) se elige en dos pasos: primero el tipo y
+// después la unidad, y entremedio todavía no hay insumo resuelto.
+type ItemDraft = { tipo: string; insumoId: string; cantidad: string }
 
 export function EntregaForm({
   mode,
@@ -622,24 +626,37 @@ export function EntregaForm({
   const [jv, setJv] = useState(data?.jv ?? "")
   const [items, setItems] = useState<ItemDraft[]>(
     data?.items
-      ? data.items.map((i) => ({ insumoId: i.insumoId, cantidad: String(i.cantidad) }))
-      : [{ insumoId: "", cantidad: "" }],
+      ? data.items.map((i) => ({
+          tipo: app.insumo(i.insumoId)?.tipo ?? "",
+          insumoId: i.insumoId,
+          cantidad: String(i.cantidad),
+        }))
+      : [{ tipo: "", insumoId: "", cantidad: "" }],
   )
   const [touched, setTouched] = useState(false)
   const [saving, setSaving] = useState(false)
 
   const setItem = (i: number, patch: Partial<ItemDraft>) =>
     setItems(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)))
-  const addItem = () => setItems([...items, { insumoId: "", cantidad: "" }])
+  const addItem = () => setItems([...items, { tipo: "", insumoId: "", cantidad: "" }])
   const removeItem = (i: number) => setItems(items.filter((_, idx) => idx !== i))
 
+  const grupos = agruparInsumos(app.data.insumos)
+  const grupoDe = (tipo: string) => grupos.find((g) => g.tipo === tipo)
+
   const validItems = items.filter((it) => it.insumoId && Number(it.cantidad) > 0)
+  // Una fila con tipo pero sin unidad se caería de `validItems` en silencio.
+  const faltaUnidad = items.some((it) => it.tipo && !it.insumoId)
   const errs = {
     fecha: !fecha ? "Indica la fecha." : "",
     direccion: !direccion.trim() ? "Indica la dirección." : "",
     beneficiario: !beneficiario.trim() ? "Indica el beneficiario." : "",
     jv: !jv.trim() ? "Indica la junta vecinal." : "",
-    items: validItems.length === 0 ? "Agrega al menos un insumo con cantidad." : "",
+    items: faltaUnidad
+      ? "Elige la unidad del insumo."
+      : validItems.length === 0
+        ? "Agrega al menos un insumo con cantidad."
+        : "",
   }
   const valid = Object.values(errs).every((e) => !e)
   const usedIds = items.map((i) => i.insumoId)
@@ -812,13 +829,27 @@ export function EntregaForm({
           {items.length === 0 && <div className="repeater__empty">No hay insumos agregados.</div>}
           {items.map((it, i) => {
             const ins = it.insumoId ? app.insumo(it.insumoId) : null
+            const grupo = grupoDe(it.tipo)
+            // Una variante ocupada en otra fila no se puede repetir: la entrega
+            // tiene un único ítem por insumo (@@unique([deliveryId, supplyId])).
+            const libre = (x: { id: string }) => !usedIds.includes(x.id) || x.id === it.insumoId
             return (
               <div className="repeater__row" key={i}>
-                <Select value={it.insumoId} onChange={(e) => setItem(i, { insumoId: e.target.value })}>
+                <Select
+                  value={it.tipo}
+                  onChange={(e) => {
+                    const g = grupoDe(e.target.value)
+                    // Con una sola unidad no hay nada que preguntar: se resuelve sola.
+                    setItem(i, {
+                      tipo: e.target.value,
+                      insumoId: g?.variantes.length === 1 ? g.variantes[0].id : "",
+                    })
+                  }}
+                >
                   <option value="">Selecciona un insumo…</option>
-                  {app.data.insumos.map((x) => (
-                    <option key={x.id} value={x.id} disabled={usedIds.includes(x.id) && x.id !== it.insumoId}>
-                      {x.tipo}
+                  {grupos.map((g) => (
+                    <option key={g.tipo} value={g.tipo} disabled={!g.variantes.some(libre)}>
+                      {g.tipo}
                     </option>
                   ))}
                 </Select>
@@ -829,7 +860,22 @@ export function EntregaForm({
                   onChange={(e) => setItem(i, { cantidad: e.target.value })}
                   placeholder="0"
                 />
-                <div className="unit-tag">{ins ? ins.unidad : "—"}</div>
+                {grupo && grupo.variantes.length > 1 ? (
+                  <Select
+                    value={it.insumoId}
+                    invalid={touched && !it.insumoId}
+                    onChange={(e) => setItem(i, { insumoId: e.target.value })}
+                  >
+                    <option value="">Unidad…</option>
+                    {grupo.variantes.map((x) => (
+                      <option key={x.id} value={x.id} disabled={!libre(x)}>
+                        {x.unidad}
+                      </option>
+                    ))}
+                  </Select>
+                ) : (
+                  <div className="unit-tag">{ins ? ins.unidad : "—"}</div>
+                )}
                 <button
                   className="icon-btn icon-btn--danger"
                   onClick={() => removeItem(i)}
