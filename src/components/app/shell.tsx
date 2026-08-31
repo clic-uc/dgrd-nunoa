@@ -309,7 +309,8 @@ function Topbar({ crumbs }: { crumbs: Crumb[] }) {
 
       <div className="topbar__spacer" />
 
-      {app.realAdmin && (
+      {/* Solo en desarrollo — ver PREVIEW_ROL en ./provider. */}
+      {process.env.NODE_ENV !== "production" && app.realAdmin && (
         <div className="role-toggle" title="Previsualizar la interfaz según el rol">
           <button className={!app.viewAsRegular ? "on" : ""} onClick={() => app.setViewAsRegular(false)}>
             Vista admin

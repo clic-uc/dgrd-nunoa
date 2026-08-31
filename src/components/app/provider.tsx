@@ -72,6 +72,7 @@ export type AppCtxValue = {
   isAdmin: boolean
   /** El usuario es admin de verdad (independiente de la previsualización). */
   realAdmin: boolean
+  /** Previsualización de rol. Siempre `false` en producción (ver `PREVIEW_ROL`). */
   viewAsRegular: boolean
   setViewAsRegular: (v: boolean) => void
   canEdit: boolean
@@ -108,13 +109,26 @@ export function useApp(): AppCtxValue {
 
 const LS_VIEW = "dgrd_view_as_regular"
 
+/**
+ * El toggle "Vista admin / Vista usuario" es una ayuda de desarrollo para revisar la
+ * interfaz con permisos de usuario regular. Fuera de `pnpm dev` no se renderiza ni se
+ * respeta la preferencia guardada.
+ *
+ * El control en el topbar repite esta comparación en vez de importar la constante:
+ * webpack inlinea `process.env.NODE_ENV` por módulo, así que escrita ahí mismo el
+ * bloque JSX se elimina del bundle de producción, y a través del import no.
+ */
+export const PREVIEW_ROL = process.env.NODE_ENV !== "production"
+
 export function AppProvider({ data, me, children }: { data: AppData; me: SesionUsuario; children: ReactNode }) {
   const router = useRouter()
   const toast = useToast()
   const [busy, setBusy] = useState(false)
 
   const [viewPref, setViewPref] = usePersistedState<"0" | "1">(LS_VIEW, "0")
-  const viewAsRegular = viewPref === "1"
+  // En producción se ignora lo guardado: un `dgrd_view_as_regular=1` que quedara en
+  // localStorage dejaría al admin sin el grupo "Administración" y sin forma de revertirlo.
+  const viewAsRegular = PREVIEW_ROL && viewPref === "1"
   const setViewAsRegular = useCallback((v: boolean) => setViewPref(v ? "1" : "0"), [setViewPref])
 
   const nav = useCallback(
