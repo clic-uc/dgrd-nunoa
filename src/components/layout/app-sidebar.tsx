@@ -1,98 +1,71 @@
 "use client"
-
-import { usePermission } from "@/providers/permissions"
 import Image from "next/image"
+import { SignOutButton } from "@/components/auth/sign-out-button"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Box, CalendarRange, FileText, Home, Package, Siren, Users } from "lucide-react"
+import { Box, CalendarRange, FileText, Package, Search, Siren, Users, ListChecks, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-type NavItem = {
-  href: string
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-}
-
-type NavGroup = {
-  label: string
-  items: NavItem[]
-}
-
-const NAV_GROUPS: NavGroup[] = [
-  { label: "General", items: [{ href: "/resumen", label: "Resumen", icon: Home }] },
+import { can, type Resource } from "@/lib/permissions"
+import { useRole } from "@/providers/permissions"
+const groups: { label: string; items: { href: string; label: string; resource: Resource; icon: typeof Search }[] }[] = [
+  { label: "General", items: [{ href: "/buscar", label: "Buscar", resource: "deliveries", icon: Search }] },
   {
     label: "Emergencias",
     items: [
-      { href: "/solicitudes", label: "Solicitudes", icon: FileText },
-      { href: "/eventos", label: "Eventos", icon: Siren },
+      { href: "/solicitudes", label: "Solicitudes", resource: "requests", icon: FileText },
+      { href: "/eventos", label: "Eventos", resource: "events", icon: Siren },
     ],
   },
   {
     label: "Ayudas primera respuesta",
     items: [
-      { href: "/entregas", label: "Entregas", icon: Package },
-      { href: "/insumos", label: "Insumos", icon: Box },
-      { href: "/juntas-vecinales", label: "Juntas vecinales", icon: Users },
+      { href: "/entregas", label: "Entregas", resource: "deliveries", icon: Package },
+      { href: "/insumos", label: "Insumos", resource: "supplies", icon: Box },
+      { href: "/juntas-vecinales", label: "Juntas vecinales", resource: "neighborhood-associations", icon: Users },
     ],
   },
   {
     label: "Plan RRD",
-    items: [{ href: "/plan/acciones", label: "Cronograma", icon: CalendarRange }],
+    items: [
+      { href: "/plan/acciones", label: "Acciones estratégicas", resource: "strategic-actions", icon: ListChecks },
+      { href: "/actividades", label: "Actividades", resource: "activities", icon: FileText },
+      { href: "/plan/cronograma", label: "Cronograma", resource: "activities", icon: CalendarRange },
+    ],
+  },
+  {
+    label: "Administración",
+    items: [
+      { href: "/administracion/usuarios", label: "Usuarios", resource: "users", icon: Users },
+      { href: "/administracion/tipos-evento", label: "Tipos de evento", resource: "event-types", icon: Settings },
+    ],
   },
 ]
-
-export function AppSidebar() {
+export function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
-  const canReadEmergencies = usePermission("requests", "read")
-
+  const role = useRole()
   return (
-    <aside className="bg-ink hidden w-[248px] shrink-0 flex-col text-white lg:flex">
-      <Link
-        href="/plan/acciones"
-        className="focus-visible:ring-brand/60 flex items-center gap-3 px-5 py-5 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
-      >
-        <Image
-          src="/logo-mark-yellow.svg"
-          alt=""
-          width={34}
-          height={34}
-          unoptimized
-          aria-hidden="true"
-          className="size-[34px] shrink-0"
-        />
-        <span className="leading-[1.25]">
-          <span className="block text-[13px] font-semibold">Dirección de Gestión de Riesgo y Desastres</span>
-          <span className="text-ink-muted block text-[11px]">Municipalidad de Ñuñoa</span>
-        </span>
-      </Link>
-
-      <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
-        {NAV_GROUPS.filter((group) => group.label !== "Emergencias" || canReadEmergencies).map((group) => (
+    <nav aria-label="Navegación principal" className="flex flex-1 flex-col gap-6 px-3 py-4">
+      {groups
+        .map((group) => ({ ...group, items: group.items.filter((item) => can(role, item.resource, "read")) }))
+        .filter((group) => group.items.length)
+        .map((group) => (
           <div key={group.label}>
-            <p className="text-ink-muted px-2 pb-2 text-[10px] font-semibold tracking-[0.09em] uppercase">
-              {group.label}
-            </p>
-            <ul className="flex flex-col gap-0.5">
+            <p className="px-2 pb-2 text-xs font-semibold uppercase opacity-70">{group.label}</p>
+            <ul className="space-y-1">
               {group.items.map(({ href, label, icon: Icon }) => {
-                const isActive = pathname === href || pathname.startsWith(`${href}/`)
-
+                const active = pathname === href || pathname.startsWith(`${href}/`)
                 return (
                   <li key={href}>
                     <Link
                       href={href}
-                      aria-current={isActive ? "page" : undefined}
+                      onClick={onNavigate}
+                      aria-current={active ? "page" : undefined}
                       className={cn(
-                        "focus-visible:ring-brand/60 relative flex items-center gap-2.5 rounded-md px-2 py-2 text-[13.5px] font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none",
-                        isActive ? "bg-ink-soft text-white" : "text-ink-muted hover:bg-ink-soft/60 hover:text-white",
+                        "flex min-h-11 items-center gap-3 rounded-md px-3 py-2 text-sm focus-visible:ring-2",
+                        active ? "bg-ink-soft text-white" : "hover:bg-ink-soft/60",
                       )}
                     >
-                      {isActive && (
-                        <span
-                          aria-hidden="true"
-                          className="bg-brand absolute inset-y-1.5 left-0 w-[3px] rounded-full"
-                        />
-                      )}
-                      <Icon className={cn("size-4 shrink-0", isActive && "text-brand")} />
+                      <Icon className="size-4 shrink-0" />
                       {label}
                     </Link>
                   </li>
@@ -101,7 +74,23 @@ export function AppSidebar() {
             </ul>
           </div>
         ))}
-      </nav>
+    </nav>
+  )
+}
+export function AppSidebar() {
+  return (
+    <aside className="bg-ink hidden w-[248px] shrink-0 flex-col text-white lg:flex">
+      <Link href="/entregas" className="flex items-center gap-3 px-5 py-5">
+        <Image src="/logo-mark-yellow.svg" alt="" width={34} height={34} unoptimized />
+        <span className="text-sm font-semibold">
+          Dirección de Gestión de Riesgo y Desastres
+          <span className="block text-xs font-normal opacity-70">Municipalidad de Ñuñoa</span>
+        </span>
+      </Link>
+      <NavigationLinks />
+      <div className="border-t border-white/20 p-3">
+        <SignOutButton />
+      </div>
     </aside>
   )
 }

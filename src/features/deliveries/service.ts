@@ -15,7 +15,7 @@ const include = {
 } satisfies Prisma.DeliveryInclude
 
 export async function listDeliveries(query: ListDeliveriesQuery) {
-  const { q, from, to, event, supplyId, neighborhoodAssociationId, order = "desc" } = query
+  const { q, from, to, event, beneficiary, eventId, supplyId, neighborhoodAssociationId, order = "desc" } = query
   const where: Prisma.DeliveryWhereInput = {
     ...(from || to
       ? {
@@ -27,6 +27,8 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
       : {}),
     ...(event === "with" ? { eventId: { not: null } } : event === "without" ? { eventId: null } : {}),
     ...(neighborhoodAssociationId && { neighborhoodAssociationId }),
+    ...(beneficiary && { beneficiary: { contains: beneficiary, mode: "insensitive" } }),
+    ...(eventId && { eventId }),
     ...(supplyId && { items: { some: { supplyId } } }),
     ...(q && {
       OR: [
@@ -59,7 +61,7 @@ export async function getDelivery(id: string) {
   return delivery
 }
 export async function getDeliveryOptions() {
-  const [supplies, requests, neighborhoodAssociations] = await Promise.all([
+  const [supplies, requests, neighborhoodAssociations, events] = await Promise.all([
     prisma.supply.findMany({
       select: { id: true, type: true, unit: true },
       orderBy: [{ type: "asc" }, { unit: "asc" }],
@@ -78,8 +80,12 @@ export async function getDeliveryOptions() {
       select: { id: true, number: true, name: true, active: true },
       orderBy: { number: "asc" },
     }),
+    prisma.event.findMany({
+      select: { id: true, folio: true, sector: true },
+      orderBy: [{ date: "desc" }, { id: "desc" }],
+    }),
   ])
-  return { supplies, requests, neighborhoodAssociations }
+  return { supplies, requests, neighborhoodAssociations, events }
 }
 function fail(field: string, message: string, status = 400): never {
   throw new AppError(status, message, { fieldErrors: { [field]: [message] } })

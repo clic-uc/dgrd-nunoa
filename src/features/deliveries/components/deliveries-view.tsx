@@ -32,6 +32,9 @@ function period(key: "month" | "30" | "year"): [string, string] {
 }
 export function DeliveriesView() {
   const [search, setSearch] = useState("")
+  const [beneficiary, setBeneficiary] = useState("")
+  const [eventId, setEventId] = useState("")
+  const debouncedBeneficiary = useDebouncedValue(beneficiary)
   const [from, setFrom] = useState("")
   const [to, setTo] = useState("")
   const [event, setEvent] = useState<NonNullable<ListDeliveriesQuery["event"]>>("all")
@@ -48,6 +51,8 @@ export function DeliveriesView() {
   const query = useDeliveries(
     {
       q: q || undefined,
+      beneficiary: debouncedBeneficiary || undefined,
+      eventId: eventId || undefined,
       from: from || undefined,
       to: to || undefined,
       event,
@@ -59,6 +64,8 @@ export function DeliveriesView() {
   )
   const options = useDeliveryOptions()
   const advancedCount =
+    Number(Boolean(beneficiary)) +
+    Number(Boolean(eventId)) +
     Number(event !== "all") +
     Number(Boolean(supplyId)) +
     Number(Boolean(neighborhoodAssociationId)) +
@@ -67,6 +74,8 @@ export function DeliveriesView() {
   const rows = validPeriod ? (query.data?.data ?? []) : []
   function clear() {
     setSearch("")
+    setBeneficiary("")
+    setEventId("")
     setFrom("")
     setTo("")
     setEvent("all")
@@ -184,6 +193,26 @@ export function DeliveriesView() {
       )}
       {advanced && (
         <div id="delivery-filters" className="delivery-filter-panel">
+          <label>
+            Beneficiario
+            <Input
+              value={beneficiary}
+              onChange={(e) => setBeneficiary(e.target.value)}
+              placeholder="Nombre del beneficiario"
+            />
+          </label>
+          <label>
+            Evento específico
+            <select className="delivery-select" value={eventId} onChange={(e) => setEventId(e.target.value)}>
+              <option value="">Cualquier evento</option>
+              {options.data?.events?.map((event) => (
+                <option key={event.id} value={event.id}>
+                  {event.folio} · {event.sector}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label>
             Junta vecinal
             <select

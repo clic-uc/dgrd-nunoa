@@ -1,5 +1,7 @@
 "use client"
 
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
@@ -11,17 +13,20 @@ import { signOut } from "@/lib/auth-client"
  */
 export function SignOutButton() {
   const router = useRouter()
+  const client = useQueryClient()
   const [isPending, setIsPending] = useState(false)
 
   const handleSignOut = async () => {
     setIsPending(true)
     try {
-      await signOut()
-    } finally {
-      // Aunque la petición falle, se limpia el estado del cliente y se envía al
-      // login: sin cookie válida no hay acceso a las vistas protegidas.
+      const result = await signOut()
+      if (result.error) throw new Error(result.error.message ?? "No se pudo cerrar la sesión.")
+      client.clear()
       router.replace("/login")
       router.refresh()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo cerrar la sesión. Inténtalo nuevamente.")
+      setIsPending(false)
     }
   }
 

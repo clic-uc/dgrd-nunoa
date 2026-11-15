@@ -43,7 +43,9 @@ export const createDeliverySchema = deliveryFieldsSchema
 export const updateDeliverySchema = deliveryFieldsSchema.partial()
 export const listDeliveriesQuerySchema = z
   .object({
-    q: z.string().trim().optional(),
+    q: z.string().trim().max(500).optional(),
+    beneficiary: z.string().trim().max(500).optional(),
+    eventId: z.cuid().optional(),
     from: day.optional(),
     to: day.optional(),
     event: z.enum(["all", "with", "without"]).default("all"),
@@ -59,6 +61,8 @@ export type CreateDeliveryInput = z.infer<typeof createDeliverySchema>
 export type UpdateDeliveryInput = z.infer<typeof updateDeliverySchema>
 export type ListDeliveriesQuery = {
   q?: string
+  beneficiary?: string
+  eventId?: string
   from?: string
   to?: string
   event?: "all" | "with" | "without"
@@ -89,6 +93,7 @@ export type DeliveryListResponse = {
   stats: { deliveries: number; units: number; neighborhoods: number }
 }
 export type DeliveryOptions = {
+  events: { id: string; folio: string; sector: string }[]
   neighborhoodAssociations: { id: string; number: number; name: string; active: boolean }[]
   supplies: { id: string; type: string; unit: string }[]
   requests: {

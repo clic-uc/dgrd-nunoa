@@ -1,6 +1,7 @@
 import { PermissionsProvider } from "@/providers/permissions"
 import { normalizeRole } from "@/lib/permissions"
 import { redirect } from "next/navigation"
+import { MobileNavigation } from "@/components/layout/mobile-navigation"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -23,7 +24,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <TooltipProvider delayDuration={200}>
         <div className="flex min-h-svh flex-1">
           <AppSidebar />
-          <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <MobileNavigation />
+            {children}
+          </div>
           <Toaster position="bottom-right" />
         </div>
       </TooltipProvider>

@@ -13,3 +13,7 @@ export function PermissionsProvider({ role, children }: { role: string; children
 export function usePermission(resource: Resource, action: Action) {
   return can(useContext(RoleContext), resource, action)
 }
+
+export function useRole() {
+  return useContext(RoleContext)
+}

@@ -49,6 +49,9 @@ mock.module("next/navigation", {
     },
   },
 })
+mock.module(file("src/components/auth/sign-out-button.tsx"), {
+  namedExports: { SignOutButton: () => createElement("button", null, "Cerrar sesión") },
+})
 mock.module(file("src/lib/session.ts"), {
   namedExports: { getSession: async () => (role === null ? null : { user: { name: "Operador", role } }) },
 })
