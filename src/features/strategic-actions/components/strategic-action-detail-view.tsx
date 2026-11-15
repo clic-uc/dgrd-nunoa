@@ -1,5 +1,6 @@
 "use client"
 
+import { ActivityEditor } from "@/features/activities/components/activity-editor"
 import { usePermission } from "@/providers/permissions"
 import { useState } from "react"
 import Link from "next/link"
@@ -19,7 +20,6 @@ import {
 import { AppTopbar } from "@/components/layout/app-topbar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { durationInDays, formatDate } from "@/lib/format"
 import type { StrategicActionActivity, StrategicActionDetail } from "../schemas"
 import { useStrategicAction } from "../queries"
@@ -79,7 +79,7 @@ export function StrategicActionDetailView({ id, user }: Props) {
             />
 
             <div className="mt-6 grid items-start gap-5 lg:grid-cols-[1.15fr_1fr]">
-              <ActivitiesCard activities={action.activities} />
+              <ActivitiesCard activities={action.activities} action={action} />
               <InfoCard action={action} />
             </div>
 
@@ -163,7 +163,15 @@ function pluralizeDays(days: number) {
   return days === 1 ? "1 día" : `${days} días`
 }
 
-function ActivitiesCard({ activities }: { activities: StrategicActionActivity[] }) {
+function ActivitiesCard({
+  activities,
+  action,
+}: {
+  activities: StrategicActionActivity[]
+  action: StrategicActionDetail
+}) {
+  const [creating, setCreating] = useState(false)
+  const canCreate = usePermission("activities", "create")
   return (
     <section className="bg-surface rounded-xl border">
       <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
@@ -175,17 +183,12 @@ function ActivitiesCard({ activities }: { activities: StrategicActionActivity[] 
           </span>
         </h2>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <Button variant="outline" size="sm" disabled>
-                <Plus className="size-4" />
-                Nueva actividad
-              </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>Próximamente</TooltipContent>
-        </Tooltip>
+        {canCreate && (
+          <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
+            <Plus className="size-4" />
+            Nueva actividad
+          </Button>
+        )}
       </div>
 
       {activities.length === 0 ? (
@@ -201,7 +204,12 @@ function ActivitiesCard({ activities }: { activities: StrategicActionActivity[] 
               </span>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13.5px] font-medium">{activity.objective}</p>
+                <Link
+                  href={`/actividades/${activity.id}`}
+                  className="block truncate text-[13.5px] font-medium underline"
+                >
+                  {activity.objective}
+                </Link>
                 <p className="text-muted-foreground mt-1 flex items-center gap-2 text-[12px]">
                   <span className="shrink-0 font-mono whitespace-nowrap">{formatDate(activity.date)}</span>
                   <span aria-hidden="true">·</span>
@@ -229,6 +237,7 @@ function ActivitiesCard({ activities }: { activities: StrategicActionActivity[] 
           ))}
         </ul>
       )}
+      {creating && <ActivityEditor action={action} onClose={() => setCreating(false)} />}
     </section>
   )
 }
