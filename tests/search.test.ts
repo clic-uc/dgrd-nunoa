@@ -27,7 +27,7 @@ test("búsqueda general omite módulos restringidos y rechaza elegirlos explíci
   assert.ok(!calls.includes("event"))
   calls.length = 0
   await assert.rejects(searchRecords(searchSchema.parse({ q: "vecina", module: "events" }), "user"), /No tienes acceso/)
-  assert.deepEqual(calls, [])
+  assert.equal(calls.length, 0)
   await searchRecords(searchSchema.parse({ q: "vecina" }), "admin")
   assert.ok(calls.includes("request"))
   assert.ok(calls.includes("event"))
