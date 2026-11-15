@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { RecurrenceAlert } from "./recurrence-alert"
 import { useId } from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -35,6 +36,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
     resolver: zodResolver(deliveryFormSchema),
     defaultValues: {
       beneficiary: delivery?.beneficiary ?? "",
+      beneficiaryRut: delivery?.beneficiaryRut ?? "",
       neighborhoodAssociationId: delivery?.neighborhoodAssociationId ?? "",
       contact: delivery?.contact ?? "",
       address: delivery?.address ?? "",
@@ -61,6 +63,8 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
     options.data?.requests.filter((request) => !request.delivery || request.delivery.id === delivery?.id) ?? []
   const requestId = useWatch({ control: form.control, name: "requestId" })
   const selectedRequest = requests.find((request) => request.id === requestId)
+  const beneficiaryRut = useWatch({ control: form.control, name: "beneficiaryRut" })
+  const deliveryDate = useWatch({ control: form.control, name: "date" })
   const values = useWatch({ control: form.control, name: "items" })
   const create = useCreateDelivery()
   const edit = useUpdateDelivery(delivery?.id ?? "")
@@ -178,7 +182,8 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
               {(
                 [
                   ["date", "Fecha", "date", ""],
-                  ["beneficiary", "Beneficiario", "text", "Nombre del beneficiario o comité"],
+                  ["beneficiary", "Beneficiario", "text", "Nombre del beneficiario"],
+                  ["beneficiaryRut", "RUT del beneficiario", "text", "12.345.678-5"],
                   ["contact", "Contacto", "text", "Teléfono o correo"],
                   ["address", "Dirección", "text", "Calle, número, depto/casa"],
                 ] as const
@@ -208,6 +213,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
                 </Field>
               ))}
             </div>
+            <RecurrenceAlert rut={beneficiaryRut} date={deliveryDate} excludeId={delivery?.id} />
             <div>
               <h3 className="mb-3 font-semibold">
                 Insumos entregados <span className="text-destructive">*</span>

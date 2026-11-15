@@ -33,6 +33,7 @@ test("el formulario convierte número string y PATCH conserva los omitidos", () 
 test("la junta es opcional y las referencias presentes deben ser CUID", () => {
   const input = {
     beneficiary: "Vecina",
+    beneficiaryRut: "12345678-5",
     address: "Calle",
     date: "2026-10-14",
     items: [{ supplyId: "clxxxxxxxxxxxxxxxxxxxxxxx", quantity: 1 }],

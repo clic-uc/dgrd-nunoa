@@ -1,3 +1,4 @@
+import { recurrencePeriod } from "./recurrence"
 import { nextDeliveryFolio, deliveryFolioYear } from "./folio"
 import prisma from "@/lib/prisma"
 import { Prisma } from "@/generated/prisma/client"
@@ -33,7 +34,7 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
     ...(supplyId && { items: { some: { supplyId } } }),
     ...(q && {
       OR: [
-        ...["folio", "beneficiary", "address"].map((field) => ({
+        ...["folio", "beneficiary", "beneficiaryRut", "address"].map((field) => ({
           [field]: { contains: q, mode: "insensitive" },
         })),
         { neighborhoodAssociation: { name: { contains: q, mode: "insensitive" } } },
@@ -145,9 +146,11 @@ export async function updateDelivery(id: string, input: UpdateDeliveryInput) {
       await tx.$queryRaw`SELECT id FROM "delivery" WHERE id = ${id} FOR UPDATE`
       const current = await tx.delivery.findUnique({
         where: { id },
-        select: { id: true, neighborhoodAssociationId: true },
+        select: { id: true, neighborhoodAssociationId: true, beneficiaryRut: true },
       })
       if (!current) throw new AppError(404, "La entrega no existe.")
+      if (!input.beneficiaryRut && !current.beneficiaryRut)
+        fail("beneficiaryRut", "Completa el RUT del beneficiario para actualizar esta entrega.")
       const eventId = await validateRelations(tx, input, id, current.neighborhoodAssociationId)
       const { items, ...fields } = input
       if (items) await tx.deliveryItem.deleteMany({ where: { deliveryId: id } })
@@ -203,4 +206,19 @@ export async function createDelivery(input: CreateDeliveryInput, userId: string)
   } catch (error) {
     translateError(error)
   }
+}
+
+export async function getRecurrence({ rut, date, excludeId }: { rut: string; date: string; excludeId?: string }) {
+  const { start, end } = recurrencePeriod(date)
+  const deliveries = await prisma.delivery.findMany({
+    where: { beneficiaryRut: rut, date: { gte: start, lte: end }, ...(excludeId && { id: { not: excludeId } }) },
+    select: {
+      id: true,
+      folio: true,
+      date: true,
+      items: { select: { quantity: true, supply: { select: { type: true, unit: true } } } },
+    },
+    orderBy: [{ date: "desc" }, { id: "desc" }],
+  })
+  return { from: start.toISOString(), to: end.toISOString(), deliveries }
 }

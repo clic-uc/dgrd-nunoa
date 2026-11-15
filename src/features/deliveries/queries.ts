@@ -83,3 +83,12 @@ export function useDeleteDelivery() {
 export function useDeliveryOptions() {
   return useQuery({ queryKey: deliveryKeys.options(), queryFn: api.getDeliveryOptions })
 }
+
+export function useRecurrence(query: { rut: string; date: string; excludeId?: string }, enabled: boolean) {
+  return useQuery({
+    queryKey: [...deliveryKeys.all, "recurrence", query],
+    queryFn: () => api.getRecurrence(query),
+    enabled,
+    staleTime: 0,
+  })
+}

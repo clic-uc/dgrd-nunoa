@@ -52,6 +52,7 @@ test(
       const supply = await prisma.supply.create({ data: { type: marker, unit: "unidad", createdBy: userId } })
       const input = {
         beneficiary: marker,
+        beneficiaryRut: "12345678-5",
         neighborhoodAssociationId: first.id,
         contact: null,
         address: "Prueba",
@@ -123,6 +124,7 @@ test(
           data: {
             folio: marker,
             beneficiary: marker,
+            beneficiaryRut: "12345678-5",
             neighborhoodAssociationId: raceAssociation.id,
             address: "Prueba",
             date: new Date("2026-10-14"),
@@ -202,6 +204,7 @@ test(
           data: {
             folio: `${userId}-${index}`,
             beneficiary: "Beneficiario de prueba",
+            beneficiaryRut: "12345678-5",
             address: "Prueba",
             date: new Date(date),
             neighborhoodAssociationId: association.id,
@@ -220,6 +223,7 @@ test(
         data: {
           folio: `${userId}-otra-junta`,
           beneficiary: "Otro",
+          beneficiaryRut: "12345678-5",
           address: "Prueba",
           date: new Date("2026-01-01"),
           neighborhoodAssociationId: other.id,

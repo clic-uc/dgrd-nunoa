@@ -201,6 +201,7 @@ model Request {
 model Delivery {
   id                        String                   @id @default(cuid())
   folio                     String                   @unique
+  beneficiaryRut            String?
   beneficiary               String
   neighborhoodAssociationId String?
   neighborhoodAssociation   NeighborhoodAssociation? @relation(fields: [neighborhoodAssociationId], references: [id], onDelete: Restrict)
@@ -226,6 +227,7 @@ model Delivery {
   creator   User   @relation(fields: [createdBy], references: [id], onDelete: Restrict)
 
   @@index([eventId])
+  @@index([beneficiaryRut, date])
   @@index([neighborhoodAssociationId])
   @@map("delivery")
 }

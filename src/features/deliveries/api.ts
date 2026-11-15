@@ -58,3 +58,9 @@ export function updateDelivery(id: string, payload: DeliveryPatch) {
 export function deleteDelivery(id: string) {
   return request<void>(`${BASE_URL}/${id}`, { method: "DELETE" })
 }
+
+export function getRecurrence(query: { rut: string; date: string; excludeId?: string }) {
+  const params = new URLSearchParams({ rut: query.rut, date: query.date })
+  if (query.excludeId) params.set("excludeId", query.excludeId)
+  return request<import("./schemas").RecurrenceResult>(`${BASE_URL}/recurrence?${params}`)
+}

@@ -94,6 +94,10 @@ export function DeliveryDetailView({
             </h2>
             <dl className="delivery-kv">
               <div>
+                <dt>RUT del beneficiario</dt>
+                <dd>{delivery.beneficiaryRut ?? "Sin RUT histórico; completar al editar"}</dd>
+              </div>
+              <div>
                 <dt>Beneficiario</dt>
                 <dd>{delivery.beneficiary}</dd>
               </div>

@@ -48,6 +48,7 @@ test(
       const delivery = await createDelivery(
         createDeliverySchema.parse({
           beneficiary: marker,
+          beneficiaryRut: "12345678-5",
           neighborhoodAssociationId: association.id,
           address: "Prueba",
           date: "2026-10-14",

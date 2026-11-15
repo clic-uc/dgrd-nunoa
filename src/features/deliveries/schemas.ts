@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { rutSchema } from "@/lib/rut"
 
 const requiredText = (label: string) =>
   z
@@ -26,6 +27,7 @@ const itemsSchema = z
 
 export const deliveryFieldsSchema = z.object({
   beneficiary: requiredText("El beneficiario"),
+  beneficiaryRut: rutSchema,
   neighborhoodAssociationId: z.cuid("Selecciona una junta vecinal válida.").nullable().optional(),
   contact: z
     .string()
@@ -72,6 +74,7 @@ export type Delivery = {
   id: string
   folio: string
   beneficiary: string
+  beneficiaryRut: string | null
   neighborhoodAssociationId: string | null
   neighborhoodAssociation: { id: string; number: number; name: string; active: boolean } | null
   contact: string | null
@@ -105,6 +108,9 @@ export type DeliveryPayload = Omit<CreateDeliveryInput, "date"> & { date: string
 export type DeliveryPatch = Partial<DeliveryPayload>
 export const deliveryFormSchema = z.object({
   beneficiary: requiredText("El beneficiario"),
+  beneficiaryRut: z
+    .string()
+    .refine((value) => rutSchema.safeParse(value).success, "Indica un RUT válido con dígito verificador."),
   neighborhoodAssociationId: z.union([z.literal(""), z.cuid("Selecciona una junta vecinal válida.")]),
   contact: z.string().trim().max(500, "El contacto no puede superar los 500 caracteres."),
   address: requiredText("La dirección"),
@@ -132,8 +138,21 @@ export function toDeliveryPayload(values: DeliveryFormValues): DeliveryPayload {
   return {
     ...values,
     neighborhoodAssociationId: values.neighborhoodAssociationId || null,
+    beneficiaryRut: rutSchema.parse(values.beneficiaryRut),
     contact: values.contact || null,
     requestId: values.requestId || null,
     items: values.items.map((item) => ({ supplyId: item.supplyId, quantity: Number(item.quantity) })),
   }
+}
+
+export const recurrenceQuerySchema = z.object({ rut: rutSchema, date: z.iso.date(), excludeId: z.cuid().optional() })
+export type RecurrenceResult = {
+  from: string
+  to: string
+  deliveries: {
+    id: string
+    folio: string
+    date: string
+    items: { quantity: number; supply: { type: string; unit: string } }[]
+  }[]
 }
