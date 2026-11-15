@@ -6,7 +6,7 @@ Stack: **Next.js 16** (App Router, React 19) · **PostgreSQL + Prisma 7** · **B
 
 ## Requisitos
 
-- Node.js 20.19+ / 22.12+ / 24+
+- Node.js **24.x** (`.nvmrc`: 24.18.0; ejecuta `nvm use` para que los procesos hijos usen la misma versión).
 - [pnpm](https://pnpm.io/)
 - [Docker](https://www.docker.com/) (para la base de datos local)
 
@@ -109,8 +109,8 @@ Autohospedada con Better Auth, **sólo correo + contraseña** (sin proveedores e
 Los usuarios normales gestionan entregas e insumos de cualquier autor y consultan
 juntas vecinales y acciones estratégicas. Solo los administradores gestionan estos
 dos catálogos y acceden a Solicitudes y Eventos. Los permisos se validan en el
-servidor y se reflejan en la interfaz. La política también contempla actividades y
-evidencia para sus futuros módulos.
+servidor y se reflejan en la interfaz. Las actividades ya permiten gestión de cualquier autor.
+La evidencia queda pendiente junto con el diseño de archivos.
 
 Consulta la [matriz de permisos y verificación](./specs/permisos.md).
 
@@ -120,3 +120,61 @@ Consulta la [matriz de permisos y verificación](./specs/permisos.md).
 - Componentes shadcn en `src/components/ui/`, lógica compartida en `src/lib/`.
 
 Más detalles para contribuir en [CLAUDE.md](./CLAUDE.md).
+
+## Estado y módulos
+
+Decisiones vigentes: [alcance del 15 de noviembre](./specs/decisiones-2026-11-15.md).
+
+- Entregas: RUT obligatorio con validación, junta opcional, alerta informativa por RUT de seis meses, insumos y filtros combinables.
+- Emergencias: tipos de evento, eventos y solicitudes; creación contextual evento → solicitud → entrega. Folios anuales persistentes sin reutilización. Solicitudes con entrega no se pueden borrar; se pueden anular.
+- Plan RRD: acciones, actividades sin estados, advertencia de fechas fuera de periodo, cronograma anual y agenda mensual.
+- Administración: usuarios institucionales, roles, activación, contraseñas y auditoría transaccional. Cuentas con historial se desactivan.
+- Búsqueda transversal por módulo, texto y periodo; navegación según rol con menú móvil. Inicio en entregas.
+
+Fuera de esta implementación: archivos (fotos y evidencia), mapas/georreferenciación, nuevos indicadores/resumen, inventario de stock/bodegas, finanzas y exportaciones. El seed oficial de juntas requiere el listado validado del usuario; no se generan juntas ficticias ni números oficiales por suposición.
+
+## Verificación reproducible
+
+```bash
+nvm use
+pnpm install
+pnpm exec prisma generate
+pnpm typecheck
+pnpm lint
+pnpm format:check
+pnpm test
+pnpm build
+# Equivalente para las comprobaciones anteriores:
+pnpm verify
+```
+
+`pnpm test` omite las integraciones por defecto. Para ejecutarlas, usa una base
+**aislada** cuyo nombre contenga `test` o `ci` como palabra separada por guiones o
+guiones bajos; no uses la base operativa. El verificador fija **DATABASE_URL y
+DIRECT_URL** a TEST_DATABASE_URL, aplica migraciones y activa todas las suites:
+
+```bash
+TEST_DATABASE_URL='postgresql://usuario:clave@localhost:5432/dgrd_test' pnpm test:integration
+```
+
+Incluye un ensayo de todas las migraciones con históricos sin RUT en un esquema
+separado y verifica preservación de folios y relaciones. No recupera ni deduce los
+RUT de los históricos: deben completarse al editar cada entrega. Cambios de evento
+heredados desde solicitudes conservan operativos esos históricos. El build descarga
+las fuentes de Google, por lo que necesita conectividad durante la compilación.
+
+## Despliegue
+
+Usar Node 24 en desarrollo, build y ejecución. Preparar respaldo y ensayar las
+migraciones antes de aplicarlas; `pnpm prisma migrate deploy` y
+`pnpm prisma generate` preceden al arranque de la nueva versión. No usar `migrate
+dev`, reset ni seed de pruebas sobre producción. La protección de la migración
+histórica de juntas sigue vigente si la base aún contiene `jv` de texto libre.
+
+Las nuevas migraciones agregan contadores de folio, descripción de solicitudes,
+protección de relaciones, RUT y auditoría. La auditoría empieza al aplicarla, no
+reconstruye acciones previas. Fijar DATABASE_URL, DIRECT_URL cuando corresponda,
+BETTER_AUTH_URL al dominio del despliegue, BETTER_AUTH_SECRET y
+ALLOWED_EMAIL_DOMAIN. ADMIN_EMAIL/ADMIN_PASSWORD solo se usan para el administrador
+inicial mediante el seed; la administración posterior se realiza desde la aplicación.
+No se despliega infraestructura ni se gestionan archivos en esta entrega.

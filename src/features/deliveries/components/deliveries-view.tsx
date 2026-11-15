@@ -380,7 +380,12 @@ export function DeliveriesView() {
                       </Link>
                     </td>
                     <td className="font-mono text-xs whitespace-nowrap">{formatDate(delivery.date)}</td>
-                    <td className="font-semibold">{delivery.beneficiary}</td>
+                    <td>
+                      <span className="font-semibold">{delivery.beneficiary}</span>
+                      <span className="text-muted-foreground block font-mono text-xs">
+                        {delivery.beneficiaryRut ?? "Sin RUT histórico"}
+                      </span>
+                    </td>
                     <td>
                       {delivery.neighborhoodAssociation ? (
                         <Link

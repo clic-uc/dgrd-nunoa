@@ -4,7 +4,7 @@ Aprobadas por Maximiliano en esta sesión; reemplazan los puntos incompatibles d
 
 ## Alcance
 
-Completar eventos y tipos, solicitudes y flujo contextual, entregas, búsquedas, actividades, cronograma, usuarios, auditoría, móvil y navegación. Sin mapas, georreferenciación, indicadores/resumen, inventario con stock/bodegas, finanzas ni exportaciones. Los archivos (fotos de entregas y evidencia opcional de actividades) se diseñarán al final antes de implementar su almacenamiento. No se inventarán juntas oficiales: seed pendiente del listado del usuario.
+Completar eventos y tipos, solicitudes y flujo contextual, entregas, búsquedas, actividades, cronograma, usuarios, auditoría, móvil y navegación. Sin mapas, georreferenciación, indicadores/resumen, inventario con stock/bodegas, finanzas ni exportaciones. Los archivos (fotos de entregas y evidencia opcional de actividades) quedan fuera de esta implementación por confirmación del usuario al final de la sesión. No se inventarán juntas oficiales: seed pendiente del listado del usuario.
 
 ## Reglas
 

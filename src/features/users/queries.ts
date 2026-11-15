@@ -6,7 +6,7 @@ export function useUsers(q = "") {
 }
 export function useSaveUser() {
   const client = useQueryClient()
-  return useMutation({ mutationFn: api.saveUser, onSuccess: () => client.invalidateQueries({ queryKey: ["users"] }) })
+  return useMutation({ mutationFn: api.saveUser, onSuccess: () => client.invalidateQueries() })
 }
 export function useDeleteUser() {
   const client = useQueryClient()

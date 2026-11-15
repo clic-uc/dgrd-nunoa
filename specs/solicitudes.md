@@ -12,8 +12,7 @@ de entregas.
 - Filtro del listado por asociación a evento (todas, con evento, sin evento).
 - Al cambiar el evento de una solicitud, la entrega vinculada lo hereda en la
   misma transacción (B04).
-- Confirmación antes de eliminar, mostrando que la entrega vinculada se borra en
-  cascada (B11), y rechazo del borrado si la entrega cambió desde que se mostró.
+- Confirmación antes de eliminar. Desde la decisión del 15 de noviembre se bloquea el borrado si existe entrega vinculada, tanto en API como en la FK.
 
 ## Qué cambió respecto de la rama original
 
@@ -31,8 +30,7 @@ de entregas.
   del año se serializan con `pg_advisory_xact_lock(684104, año)`, igual que las
   entregas con `ENT-AAAA-NNN`.
 - **Invalidación cruzada.** Las mutaciones de solicitudes invalidan entregas
-  (selector y evento heredado), insumos y juntas (historiales afectados por el
-  borrado en cascada). Las mutaciones de entregas invalidan solicitudes.
+  (selector y evento heredado), insumos y juntas (historiales relacionados). Las mutaciones de entregas invalidan solicitudes.
 
 ## API
 
@@ -53,11 +51,9 @@ de entregas.
 - El evento elegido se valida con `FOR SHARE` para que no se elimine entre la
   validación y el commit.
 
-## Pendiente
+## Integración vigente
 
-- Gestión de eventos (B02) y creación con contexto precargado desde un evento (B04).
-- Alerta de recurrencia al crear una solicitud (B17), sujeta a la definición de
-  responsable (B19).
+La gestión de eventos y la creación contextual están implementadas. RUT y alerta se guardan/evalúan solo en entregas, según las decisiones del 15 de noviembre. Solicitudes no guarda RUT ni insumos pedidos.
 
 ## Pruebas
 

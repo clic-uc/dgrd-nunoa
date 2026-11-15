@@ -30,16 +30,21 @@ function dto(user: Prisma.UserGetPayload<{ select: typeof select }>) {
   return { ...fields, historyCount: Object.values(_count).reduce((sum, value) => sum + value, 0) }
 }
 export async function listUsers(q = "") {
+  const users = await prisma.user.findMany({
+    where: q
+      ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] }
+      : {},
+    select,
+    orderBy: [{ name: "asc" }, { id: "asc" }],
+  })
+  const logs = await prisma.auditLog.groupBy({
+    by: ["actorId"],
+    where: { actorId: { in: users.map((user) => user.id) } },
+    _count: { _all: true },
+  })
+  const counts = new Map(logs.map((log) => [log.actorId, log._count._all]))
   return {
-    data: (
-      await prisma.user.findMany({
-        where: q
-          ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] }
-          : {},
-        select,
-        orderBy: [{ name: "asc" }, { id: "asc" }],
-      })
-    ).map(dto),
+    data: users.map((user) => ({ ...dto(user), historyCount: dto(user).historyCount + (counts.get(user.id) ?? 0) })),
   }
 }
 async function lockAdministration(tx: Prisma.TransactionClient, actorId: string) {

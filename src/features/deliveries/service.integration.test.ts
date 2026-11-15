@@ -96,6 +96,18 @@ test(
       assert.equal(options.requests.find((row) => row.id === request.id)?.delivery?.id, delivery.id)
       const query = { q: marker, from: "2026-10-14", to: "2026-10-14", event: "with" as const, supplyId: supply.id }
       const listed = await listDeliveries(query)
+      assert.equal(
+        (
+          await listDeliveries({
+            ...query,
+            beneficiary: marker,
+            eventId: event.id,
+            neighborhoodAssociationId: association.id,
+          })
+        ).data.length,
+        1,
+      )
+      assert.equal((await listDeliveries({ ...query, beneficiary: "does-not-exist" })).data.length, 0)
       assert.equal(listed.stats.deliveries, 1)
       assert.equal(listed.stats.units, 2)
       assert.equal(listed.stats.neighborhoods, 1)

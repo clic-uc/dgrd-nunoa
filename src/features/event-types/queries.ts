@@ -11,6 +11,7 @@ export function useSaveEventType() {
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["event-types"] })
       client.invalidateQueries({ queryKey: ["events"] })
+      client.invalidateQueries({ queryKey: ["deliveries"] })
     },
   })
 }

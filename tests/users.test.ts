@@ -9,6 +9,7 @@ import type { Resource, Action } from "../src/lib/permissions"
 const file = (path: string) => pathToFileURL(resolve(path)).href
 let role: string | null = null
 let calls = 0
+let authStatus = 200
 mock.module(file("src/lib/audit.ts"), {
   namedExports: { withAudit: async (_actor: string, operation: () => Promise<unknown>) => operation() },
 })
@@ -29,12 +30,14 @@ mock.module(file("src/features/users/service.ts"), {
     ]),
   ),
 })
-mock.module(file("src/lib/auth.ts"), { namedExports: { auth: {} } })
+mock.module(file("src/lib/auth.ts"), {
+  namedExports: { auth: { api: { getSession: async () => ({ user: { id: "operator", name: "Operador" } }) } } },
+})
 mock.module("better-auth/next-js", {
   namedExports: {
     toNextJsHandler: () => ({
       GET: async () => new Response(null, { status: 200 }),
-      POST: async () => new Response(null, { status: 200 }),
+      POST: async () => new Response(null, { status: authStatus }),
     }),
   },
 })
@@ -96,4 +99,12 @@ test("alta exige contraseña larga y rol conocido", () => {
   }
   for (const change of [{ password: "" }, { password: "123" }, { role: "unknown" }, { email: "no-es-correo" }])
     assert.equal(createUserSchema.safeParse({ ...input, ...change }).success, false)
+})
+
+test("una respuesta fallida de autenticación se propaga fuera de la transacción auditada", async () => {
+  const { POST } = await import("../src/app/api/auth/[...all]/route")
+  authStatus = 400
+  const response = await POST(new Request("http://localhost/api/auth/update-user", { method: "POST" }))
+  assert.equal(response.status, 400)
+  authStatus = 200
 })

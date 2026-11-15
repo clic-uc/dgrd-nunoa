@@ -4,7 +4,7 @@ import { randomInt, randomUUID } from "node:crypto"
 import { test } from "node:test"
 import prisma from "@/lib/prisma"
 import { AppError } from "@/lib/api-error"
-import { createDelivery } from "@/features/deliveries/service"
+import { createDelivery, updateDelivery, deleteDelivery } from "@/features/deliveries/service"
 import { createDeliverySchema } from "@/features/deliveries/schemas"
 import { createRequestSchema } from "./schemas"
 import { createRequest, deleteRequest, getRequest, listRequests, updateRequest } from "./service"
@@ -64,6 +64,8 @@ test(
       assert.equal((await prisma.delivery.findUniqueOrThrow({ where: { id: delivery.id } })).eventId, second.id)
       await updateRequest(a.id, { status: "attended" })
       assert.equal((await prisma.delivery.findUniqueOrThrow({ where: { id: delivery.id } })).eventId, second.id)
+      await assert.rejects(deleteDelivery(delivery.id), hasStatus(400))
+      await assert.rejects(updateDelivery(delivery.id, { requestId: null }), hasStatus(400))
       await updateRequest(a.id, { eventId: null })
       assert.equal((await prisma.delivery.findUniqueOrThrow({ where: { id: delivery.id } })).eventId, null)
       assert.equal((await getRequest(a.id)).delivery?.id, delivery.id)
@@ -72,7 +74,7 @@ test(
       await assert.rejects(deleteRequest(a.id, ""), hasStatus(409))
       await assert.rejects(deleteRequest(a.id, delivery.id), hasStatus(409))
       assert.equal((await getRequest(a.id)).delivery?.id, delivery.id)
-      await assert.rejects(prisma.request.delete({ where: { id: a.id } }), /Foreign key constraint/)
+      await assert.rejects(prisma.request.delete({ where: { id: a.id } }), /constraint|RESTRICT/i)
       await assert.rejects(updateRequest(b.id, { status: "attended" }), hasStatus(400))
       await updateRequest(b.id, { status: "attended", response: "Resuelta por teléfono" })
       await deleteRequest(b.id)

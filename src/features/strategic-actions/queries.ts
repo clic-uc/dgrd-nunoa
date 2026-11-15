@@ -52,6 +52,7 @@ export function useUpdateStrategicAction(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: strategicActionKeys.lists() })
       queryClient.invalidateQueries({ queryKey: strategicActionKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: ["activities"] })
     },
   })
 }

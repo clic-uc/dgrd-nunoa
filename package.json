@@ -16,7 +16,11 @@
     "test:deliveries": "node --import tsx --test src/features/deliveries/schemas.test.ts src/features/deliveries/service.integration.test.ts",
     "test:supplies": "node --import tsx --test src/features/supplies/schemas.test.ts src/features/supplies/service.integration.test.ts",
     "test:requests": "node --import tsx --test src/features/requests/schemas.test.ts src/features/requests/rules.test.ts src/features/requests/service.integration.test.ts",
-    "test:associations": "node --import tsx --test src/features/neighborhood-associations/schemas.test.ts src/features/neighborhood-associations/history.test.ts src/features/neighborhood-associations/service.integration.test.ts"
+    "test:associations": "node --import tsx --test src/features/neighborhood-associations/schemas.test.ts src/features/neighborhood-associations/history.test.ts src/features/neighborhood-associations/service.integration.test.ts",
+    "test": "node --experimental-test-module-mocks --import tsx --test --test-concurrency=1 tests/*.test.ts src/features/*/*.test.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "verify": "pnpm exec prisma generate && pnpm typecheck && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "test:integration": "node scripts/test-integration.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -67,5 +71,8 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

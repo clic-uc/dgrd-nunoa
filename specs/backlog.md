@@ -8,6 +8,17 @@ El objetivo es completar los flujos del spike e incorporar las nuevas necesidade
 operativas. Las prioridades y el orden de ejecución son propuestas, pendientes de
 validación. Los identificadores B01–B34 conservan la numeración de la conversación.
 
+## Estado vigente al 15 de noviembre de 2026
+
+Esta sección y [las decisiones de la sesión](./decisiones-2026-11-15.md) reemplazan los estados y decisiones abiertas incompatibles de las secciones históricas siguientes. La implementación está en PRs pendientes de revisión, no fusionada en main.
+
+- Implementado para revisión: tipos/eventos y flujo contextual, reglas/descripcion de solicitudes, folios persistentes, RUT obligatorio y alerta en entregas, junta opcional, búsquedas, actividades, cronograma, usuarios, navegación móvil y auditoría.
+- Regla de recurrencia vigente: únicamente RUT del beneficiario en entregas, con aviso informativo al registrar entrega y fechas/insumos/cantidades de los seis meses calendario anteriores. Sin alerta por junta ni RUT en solicitudes.
+- Actividades: sin estados; fecha, dirección, objetivo y participantes obligatorios; fechas fuera de periodo permitidas con advertencia.
+- Fuera de esta implementación por decisión del usuario: B06/B26/B27 (archivos), B09 (indicadores/resumen), B18 (alerta por junta), B30–B33 (analítica/mapas), inventario, finanzas y exportaciones.
+- Seed oficial de juntas y backfill legado: requieren listado/mapeo validado. No se inventan identidades ni asociaciones.
+- Validación: suites automatizadas y pruebas de servidor con datos ficticios aislados. Revisión visual de móvil/escritorio pendiente por indisponibilidad del navegador automatizado.
+
 ## 1. Estado de partida
 
 Según la revisión local de la rama `dev` en el commit `a572546`:

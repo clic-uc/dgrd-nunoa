@@ -51,6 +51,23 @@ export function toErrorResponse(error: unknown) {
     )
   }
 
+  const databaseError = error as { code?: string; cause?: { originalCode?: string } } | null
+  const code = databaseError?.cause?.originalCode ?? databaseError?.code
+  if (code === "23001" || code === "23503" || code === "P2003")
+    return NextResponse.json(
+      {
+        message: "El registro tiene relaciones que impiden esta operación. Actualiza los datos e inténtalo nuevamente.",
+      },
+      { status: 409 },
+    )
+  if (code === "23505" || code === "P2002")
+    return NextResponse.json({ message: "Ya existe un registro con esos datos." }, { status: 409 })
+  if (code === "23514")
+    return NextResponse.json(
+      { message: "Los datos incumplen una regla del registro. Revisa el formulario." },
+      { status: 400 },
+    )
+
   console.error(error)
 
   return NextResponse.json({ message: "Error interno del servidor." }, { status: 500 })

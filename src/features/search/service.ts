@@ -1,3 +1,4 @@
+import { normalizeRut } from "@/lib/rut"
 import prisma from "@/lib/prisma"
 import { can, type Resource } from "@/lib/permissions"
 import { AppError } from "@/lib/api-error"
@@ -18,7 +19,15 @@ export async function searchRecords({ q, module, from, to }: SearchQuery, role: 
   add("deliveries", "Entregas", async () =>
     (
       await prisma.delivery.findMany({
-        where: { ...period, OR: [{ beneficiary: contains }, { address: contains }, { folio: contains }] },
+        where: {
+          ...period,
+          OR: [
+            { beneficiary: contains },
+            { beneficiaryRut: { contains: normalizeRut(q), mode: "insensitive" } },
+            { address: contains },
+            { folio: contains },
+          ],
+        },
         select: { id: true, folio: true, beneficiary: true, address: true },
         orderBy: [{ date: "desc" }, { id: "desc" }],
         take: 20,

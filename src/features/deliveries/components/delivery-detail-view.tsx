@@ -23,6 +23,7 @@ export function DeliveryDetailView({
 }) {
   const query = useDelivery(id)
   // El usuario normal no accede a solicitudes: para él el folio queda como texto.
+  const canReadEvents = usePermission("events", "read")
   const canReadRequests = usePermission("requests", "read")
   const router = useRouter()
   const [editing, setEditing] = useState(false)
@@ -191,7 +192,16 @@ export function DeliveryDetailView({
             <h2>Evento</h2>
             {delivery.event ? (
               <div className="delivery-related">
-                <span className="delivery-badge delivery-badge-event">{delivery.event.folio}</span>
+                {canReadEvents ? (
+                  <Link
+                    href={`/eventos/${delivery.event.id}`}
+                    className="delivery-badge delivery-badge-event underline"
+                  >
+                    {delivery.event.folio}
+                  </Link>
+                ) : (
+                  <span className="delivery-badge delivery-badge-event">{delivery.event.folio}</span>
+                )}
                 <span>
                   {delivery.event.type.name} · {delivery.event.sector}
                 </span>

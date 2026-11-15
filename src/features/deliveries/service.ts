@@ -1,3 +1,4 @@
+import { normalizeRut } from "@/lib/rut"
 import { recurrencePeriod } from "./recurrence"
 import { reserveFolio } from "@/lib/folio"
 import { assertAttended } from "@/features/requests/rules"
@@ -52,6 +53,7 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
         ...["folio", "beneficiary", "beneficiaryRut", "address"].map((field) => ({
           [field]: { contains: q, mode: "insensitive" },
         })),
+        { beneficiaryRut: { contains: normalizeRut(q), mode: "insensitive" } },
         { neighborhoodAssociation: { name: { contains: q, mode: "insensitive" } } },
         ...(/^\d+$/.test(q) && Number(q) <= 2147483647 ? [{ neighborhoodAssociation: { number: Number(q) } }] : []),
         { event: { folio: { contains: q, mode: "insensitive" } } },
@@ -98,6 +100,7 @@ export async function getDeliveryOptions() {
       orderBy: { number: "asc" },
     }),
     prisma.event.findMany({
+      where: { deliveries: { some: {} } },
       select: { id: true, folio: true, sector: true },
       orderBy: [{ date: "desc" }, { id: "desc" }],
     }),
