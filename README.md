@@ -68,8 +68,8 @@ La migración `20261015000000_neighborhood_associations` sustituye el texto libr
 `Delivery.jv` por una referencia obligatoria al catálogo de juntas vecinales.
 
 - **Base sin entregas:** se aplica normalmente. Después de migrar, genera el
-  cliente de Prisma y registra las juntas en `/juntas-vecinales` antes de crear
-  nuevas entregas.
+  cliente de Prisma y registra las juntas en `/juntas-vecinales` cuando corresponda. Las nuevas
+  entregas pueden registrarse sin junta.
 - **Base con entregas existentes:** la migración se detiene antes de cambiar
   datos. No deduce números oficiales ni asociaciones a partir de `jv`.
   Se necesita un procedimiento de backfill revisado: identificar la junta

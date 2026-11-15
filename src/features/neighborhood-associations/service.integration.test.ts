@@ -80,7 +80,7 @@ test(
         (error: unknown) => error instanceof Error && error.message.includes("delivery_neighborhoodAssociationId_fkey"),
       )
       await updateNeighborhoodAssociation(first.id, { name: `${marker} corregida`, number: number + 3, active: false })
-      assert.equal((await getDelivery(delivery.id)).neighborhoodAssociation.name, `${marker} corregida`)
+      assert.equal((await getDelivery(delivery.id)).neighborhoodAssociation?.name, `${marker} corregida`)
       assert.equal((await listNeighborhoodAssociations({ q: marker, status: "inactive" })).data.length, 1)
       assert.equal(
         (await getDeliveryOptions()).neighborhoodAssociations.find((row) => row.id === first.id)?.active,

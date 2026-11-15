@@ -57,6 +57,18 @@ test(
       assert.equal(delivery.contact, null)
       assert.equal(delivery.items[0].quantity, 2)
       assert.equal((await getDelivery(delivery.id)).creator.name, marker)
+      const noAssociation = await createDelivery({ ...input, requestId: null, neighborhoodAssociationId: null }, userId)
+      assert.equal(noAssociation.neighborhoodAssociation, null)
+      const without = await listDeliveries({ q: marker, association: "without" })
+      assert.deepEqual(
+        without.data.map((row) => row.id),
+        [noAssociation.id],
+      )
+      assert.equal(without.stats.neighborhoods, 0)
+      await updateDelivery(noAssociation.id, { neighborhoodAssociationId: association.id })
+      assert.equal((await getDelivery(noAssociation.id)).neighborhoodAssociation?.id, association.id)
+      await updateDelivery(noAssociation.id, { neighborhoodAssociationId: null })
+      await deleteDelivery(noAssociation.id)
       await assert.rejects(
         createDelivery(input, userId),
         (error: unknown) => error instanceof AppError && error.status === 409 && Boolean(error.fieldErrors?.requestId),

@@ -147,7 +147,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
             </Field>
             <Field data-invalid={Boolean(errors.neighborhoodAssociationId)}>
               <FieldLabel htmlFor={`${id}-association`}>
-                Junta vecinal <span className="text-destructive">*</span>
+                Junta vecinal <span className="text-muted-foreground font-normal">Opcional</span>
               </FieldLabel>
               <select
                 id={`${id}-association`}
@@ -156,7 +156,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
                 aria-invalid={Boolean(errors.neighborhoodAssociationId)}
                 aria-describedby={`${id}-association-error`}
               >
-                <option value="">Selecciona una junta vecinal…</option>
+                <option value="">Sin junta vecinal</option>
                 {associations.map((association) => (
                   <option key={association.id} value={association.id}>
                     N°{association.number} · {association.name}
@@ -324,10 +324,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
             <Button type="button" variant="outline" disabled={pending} onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button
-              type="submit"
-              disabled={pending || !options.data || supplies.length === 0 || associations.length === 0}
-            >
+            <Button type="submit" disabled={pending || !options.data || supplies.length === 0}>
               {pending ? "Guardando…" : delivery ? "Guardar cambios" : "Registrar entrega"}
             </Button>
           </div>

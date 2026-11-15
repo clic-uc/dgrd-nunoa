@@ -71,3 +71,25 @@ test("el folio reinicia por año y ordena sufijos numéricamente", async () => {
   assert.equal(nextDeliveryFolio(["ENT-2026-001", "ENT-2026-003"], 2026), "ENT-2026-004")
   assert.equal(deliveryFolioYear(new Date("2027-01-01T01:00:00Z")), 2026)
 })
+
+test("junta opcional: PATCH omitido conserva, null desvincula y formulario vacío envía null", () => {
+  assert.equal(
+    createDeliverySchema.parse({ ...input, neighborhoodAssociationId: undefined }).neighborhoodAssociationId,
+    undefined,
+  )
+  assert.equal(
+    createDeliverySchema.parse({ ...input, neighborhoodAssociationId: null }).neighborhoodAssociationId,
+    null,
+  )
+  assert.deepEqual(updateDeliverySchema.parse({ neighborhoodAssociationId: null }), { neighborhoodAssociationId: null })
+  assert.deepEqual(updateDeliverySchema.parse({ address: "Otra" }), { address: "Otra" })
+  const values = deliveryFormSchema.parse({
+    ...input,
+    neighborhoodAssociationId: "",
+    contact: "",
+    requestId: "",
+    items: [{ type: "Agua", supplyId, quantity: "2" }],
+  })
+  assert.equal(toDeliveryPayload(values).neighborhoodAssociationId, null)
+  assert.equal(listDeliveriesQuerySchema.parse({ association: "without" }).association, "without")
+})

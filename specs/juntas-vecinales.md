@@ -1,7 +1,7 @@
 # Juntas vecinales
 
 Catálogo normalizado `NeighborhoodAssociation` (`neighborhood_association`) con
-CRUD, historial de entregas y asociación obligatoria desde `Delivery`.
+CRUD, historial de entregas y asociación opcional desde `Delivery`.
 
 ## Modelo y decisiones
 
@@ -31,8 +31,8 @@ conserva la asociación. El servidor verifica estas reglas con un bloqueo
 Se reemplaza `Delivery.jv String` por:
 
 ```prisma
-neighborhoodAssociationId String
-neighborhoodAssociation NeighborhoodAssociation @relation(
+neighborhoodAssociationId String?
+neighborhoodAssociation NeighborhoodAssociation? @relation(
   fields: [neighborhoodAssociationId], references: [id], onDelete: Restrict
 )
 ```
@@ -185,3 +185,7 @@ pnpm lint
 pnpm exec tsc --noEmit
 pnpm exec next build --webpack
 ```
+
+## Decisión del 15 de noviembre de 2026 — junta opcional
+
+La junta de una entrega es opcional. Ausencia se almacena como `null`; puede asignarse o quitarse al editar. Una entrega sin junta no aparece en desgloses de juntas ni cuenta como una junta distinta. El catálogo puede estar vacío sin impedir registrar entregas. La migración nueva conserva todas las referencias existentes y no sustituye el backfill pendiente de la migración histórica. El listado oficial para el seed sigue pendiente de entrega y validación.

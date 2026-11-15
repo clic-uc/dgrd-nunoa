@@ -13,7 +13,7 @@ const include = {
 } satisfies Prisma.DeliveryInclude
 
 export async function listDeliveries(query: ListDeliveriesQuery) {
-  const { q, from, to, event, supplyId, neighborhoodAssociationId, order = "desc" } = query
+  const { q, from, to, event, supplyId, neighborhoodAssociationId, association, order = "desc" } = query
   const where: Prisma.DeliveryWhereInput = {
     ...(from || to
       ? {
@@ -24,6 +24,11 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
         }
       : {}),
     ...(event === "with" ? { eventId: { not: null } } : event === "without" ? { eventId: null } : {}),
+    ...(association === "without"
+      ? { neighborhoodAssociationId: null }
+      : association === "with"
+        ? { neighborhoodAssociationId: { not: null } }
+        : {}),
     ...(neighborhoodAssociationId && { neighborhoodAssociationId }),
     ...(supplyId && { items: { some: { supplyId } } }),
     ...(q && {
@@ -47,7 +52,7 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
     stats: {
       deliveries: data.length,
       units: data.reduce((sum, row) => sum + row.items.reduce((total, item) => total + item.quantity, 0), 0),
-      neighborhoods: new Set(data.map((row) => row.neighborhoodAssociationId)).size,
+      neighborhoods: new Set(data.map((row) => row.neighborhoodAssociationId).filter(Boolean)).size,
     },
   }
 }
@@ -86,9 +91,9 @@ async function validateRelations(
   tx: Prisma.TransactionClient,
   input: UpdateDeliveryInput,
   id?: string,
-  currentAssociationId?: string,
+  currentAssociationId?: string | null,
 ) {
-  if (input.neighborhoodAssociationId !== undefined) {
+  if (input.neighborhoodAssociationId) {
     const associations = await tx.$queryRaw<
       { id: string; active: boolean }[]
     >`SELECT id, active FROM neighborhood_association WHERE id = ${input.neighborhoodAssociationId} FOR SHARE`

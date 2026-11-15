@@ -52,7 +52,9 @@ export function DeliveriesView() {
       to: to || undefined,
       event,
       supplyId: supplyId || undefined,
-      neighborhoodAssociationId: neighborhoodAssociationId || undefined,
+      neighborhoodAssociationId:
+        neighborhoodAssociationId === "without" ? undefined : neighborhoodAssociationId || undefined,
+      association: neighborhoodAssociationId === "without" ? "without" : "all",
       order,
     },
     { enabled: validPeriod },
@@ -193,6 +195,7 @@ export function DeliveriesView() {
               onChange={(event) => setNeighborhoodAssociationId(event.target.value)}
             >
               <option value="">Todas las juntas</option>
+              <option value="without">Sin junta vecinal</option>
               {options.data?.neighborhoodAssociations.map((association) => (
                 <option key={association.id} value={association.id}>
                   N°{association.number} · {association.name}
@@ -350,13 +353,17 @@ export function DeliveriesView() {
                     <td className="font-mono text-xs whitespace-nowrap">{formatDate(delivery.date)}</td>
                     <td className="font-semibold">{delivery.beneficiary}</td>
                     <td>
-                      <Link
-                        href={`/juntas-vecinales/${delivery.neighborhoodAssociationId}`}
-                        onClick={(event) => event.stopPropagation()}
-                        className="hover:underline"
-                      >
-                        N°{delivery.neighborhoodAssociation.number} · {delivery.neighborhoodAssociation.name}
-                      </Link>
+                      {delivery.neighborhoodAssociation ? (
+                        <Link
+                          href={`/juntas-vecinales/${delivery.neighborhoodAssociationId}`}
+                          onClick={(event) => event.stopPropagation()}
+                          className="hover:underline"
+                        >
+                          N°{delivery.neighborhoodAssociation.number} · {delivery.neighborhoodAssociation.name}
+                        </Link>
+                      ) : (
+                        "Sin junta vecinal"
+                      )}
                     </td>
                     <td>
                       <span className={`delivery-badge ${delivery.event ? "delivery-badge-event" : ""}`}>

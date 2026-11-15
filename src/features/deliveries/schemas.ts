@@ -26,7 +26,7 @@ const itemsSchema = z
 
 export const deliveryFieldsSchema = z.object({
   beneficiary: requiredText("El beneficiario"),
-  neighborhoodAssociationId: z.cuid("Selecciona una junta vecinal válida."),
+  neighborhoodAssociationId: z.cuid("Selecciona una junta vecinal válida.").nullable().optional(),
   contact: z
     .string()
     .trim()
@@ -46,6 +46,7 @@ export const listDeliveriesQuerySchema = z
     q: z.string().trim().optional(),
     from: day.optional(),
     to: day.optional(),
+    association: z.enum(["all", "with", "without"]).default("all"),
     event: z.enum(["all", "with", "without"]).default("all"),
     supplyId: z.cuid().optional(),
     neighborhoodAssociationId: z.cuid("La junta vecinal no es válida.").optional(),
@@ -64,14 +65,15 @@ export type ListDeliveriesQuery = {
   event?: "all" | "with" | "without"
   supplyId?: string
   neighborhoodAssociationId?: string
+  association?: "all" | "with" | "without"
   order?: "asc" | "desc"
 }
 export type Delivery = {
   id: string
   folio: string
   beneficiary: string
-  neighborhoodAssociationId: string
-  neighborhoodAssociation: { id: string; number: number; name: string; active: boolean }
+  neighborhoodAssociationId: string | null
+  neighborhoodAssociation: { id: string; number: number; name: string; active: boolean } | null
   contact: string | null
   address: string
   date: string
@@ -103,7 +105,7 @@ export type DeliveryPayload = Omit<CreateDeliveryInput, "date"> & { date: string
 export type DeliveryPatch = Partial<DeliveryPayload>
 export const deliveryFormSchema = z.object({
   beneficiary: requiredText("El beneficiario"),
-  neighborhoodAssociationId: z.cuid("Selecciona una junta vecinal válida."),
+  neighborhoodAssociationId: z.union([z.literal(""), z.cuid("Selecciona una junta vecinal válida.")]),
   contact: z.string().trim().max(500, "El contacto no puede superar los 500 caracteres."),
   address: requiredText("La dirección"),
   date: day,
@@ -129,6 +131,7 @@ export type DeliveryFormValues = z.infer<typeof deliveryFormSchema>
 export function toDeliveryPayload(values: DeliveryFormValues): DeliveryPayload {
   return {
     ...values,
+    neighborhoodAssociationId: values.neighborhoodAssociationId || null,
     contact: values.contact || null,
     requestId: values.requestId || null,
     items: values.items.map((item) => ({ supplyId: item.supplyId, quantity: Number(item.quantity) })),

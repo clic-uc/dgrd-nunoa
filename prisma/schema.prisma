@@ -199,16 +199,16 @@ model Request {
 }
 
 model Delivery {
-  id                        String                  @id @default(cuid())
-  folio                     String                  @unique
+  id                        String                   @id @default(cuid())
+  folio                     String                   @unique
   beneficiary               String
-  neighborhoodAssociationId String
-  neighborhoodAssociation   NeighborhoodAssociation @relation(fields: [neighborhoodAssociationId], references: [id], onDelete: Restrict)
+  neighborhoodAssociationId String?
+  neighborhoodAssociation   NeighborhoodAssociation? @relation(fields: [neighborhoodAssociationId], references: [id], onDelete: Restrict)
   contact                   String?
   address                   String
   date                      DateTime
-  createdAt                 DateTime                @default(now())
-  updatedAt                 DateTime                @updatedAt
+  createdAt                 DateTime                 @default(now())
+  updatedAt                 DateTime                 @updatedAt
 
   // Relación 1 -> 0..1 con Solicitud: al eliminar la solicitud, se borra la
   // entrega en cascada. requestId es único (una entrega por solicitud).
