@@ -1,4 +1,6 @@
-import { nextDeliveryFolio, deliveryFolioYear } from "./folio"
+import { reserveFolio } from "@/lib/folio"
+import { assertAttended } from "@/features/requests/rules"
+import { deliveryFolioYear } from "./folio"
 import prisma from "@/lib/prisma"
 import { Prisma } from "@/generated/prisma/client"
 import { AppError } from "@/lib/api-error"
@@ -137,12 +139,24 @@ function translateError(error: unknown): never {
 export async function updateDelivery(id: string, input: UpdateDeliveryInput) {
   try {
     return await prisma.$transaction(async (tx) => {
+      const original = await tx.delivery.findUnique({ where: { id }, select: { requestId: true } })
+      const requestIds = [
+        ...new Set([original?.requestId, input.requestId].filter((value): value is string => Boolean(value))),
+      ].sort()
+      for (const requestId of requestIds)
+        await tx.$queryRaw`SELECT id FROM "request" WHERE id = ${requestId} FOR UPDATE`
       await tx.$queryRaw`SELECT id FROM "delivery" WHERE id = ${id} FOR UPDATE`
       const current = await tx.delivery.findUnique({
         where: { id },
-        select: { id: true, neighborhoodAssociationId: true },
+        select: { id: true, neighborhoodAssociationId: true, requestId: true },
       })
       if (!current) throw new AppError(404, "La entrega no existe.")
+      if (current.requestId !== original?.requestId)
+        throw new AppError(409, "La solicitud vinculada cambió. Revisa la entrega.")
+      if (current.requestId && input.requestId !== undefined && input.requestId !== current.requestId) {
+        const source = await tx.request.findUniqueOrThrow({ where: { id: current.requestId } })
+        assertAttended(source.status, source.response, false)
+      }
       const eventId = await validateRelations(tx, input, id, current.neighborhoodAssociationId)
       const { items, ...fields } = input
       if (items) await tx.deliveryItem.deleteMany({ where: { deliveryId: id } })
@@ -162,7 +176,20 @@ export async function updateDelivery(id: string, input: UpdateDeliveryInput) {
 }
 export async function deleteDelivery(id: string) {
   try {
-    await prisma.delivery.delete({ where: { id } })
+    await prisma.$transaction(async (tx) => {
+      const original = await tx.delivery.findUnique({ where: { id }, select: { requestId: true } })
+      if (!original) throw new AppError(404, "La entrega no existe.")
+      if (original.requestId) {
+        await tx.$queryRaw`SELECT id FROM "request" WHERE id = ${original.requestId} FOR UPDATE`
+        const request = await tx.request.findUniqueOrThrow({ where: { id: original.requestId } })
+        assertAttended(request.status, request.response, false)
+      }
+      await tx.$queryRaw`SELECT id FROM "delivery" WHERE id = ${id} FOR UPDATE`
+      const current = await tx.delivery.findUniqueOrThrow({ where: { id }, select: { requestId: true } })
+      if (current.requestId !== original.requestId)
+        throw new AppError(409, "La solicitud vinculada cambió. Revisa la entrega.")
+      await tx.delivery.delete({ where: { id } })
+    })
   } catch (error) {
     translateError(error)
   }
@@ -176,20 +203,13 @@ export async function createDelivery(input: CreateDeliveryInput, userId: string)
       // solicitudes concurrentes no pueden reservar el mismo correlativo.
       await tx.$queryRaw`SELECT pg_advisory_xact_lock(684103, ${year}::integer)::text`
       const eventId = await validateRelations(tx, input)
-      const folios = await tx.delivery.findMany({
-        where: { folio: { startsWith: `ENT-${year}-` } },
-        select: { folio: true },
-      })
       const { items, ...fields } = input
       return tx.delivery.create({
         data: {
           ...fields,
           eventId,
           createdBy: userId,
-          folio: nextDeliveryFolio(
-            folios.map((row) => row.folio),
-            year,
-          ),
+          folio: await reserveFolio(tx, "ENT", year),
           items: { create: items },
         },
         include,

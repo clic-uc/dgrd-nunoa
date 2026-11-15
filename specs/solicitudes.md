@@ -66,3 +66,11 @@ pnpm test:requests                              # schemas y folio
 RUN_REQUEST_INTEGRATION=1 pnpm test:requests    # + integración contra PostgreSQL
 pnpm test:permissions                           # rutas y páginas por rol
 ```
+
+## Decisiones aprobadas el 15 de noviembre de 2026
+
+- Descripción opcional (máximo 2000 caracteres), distinta de la respuesta.
+- Estados: pendiente, atendida y anulada. Atendida exige respuesta no vacía o entrega vinculada; crear una entrega no cambia automáticamente el estado. Quitar o eliminar la única entrega de una solicitud atendida sin respuesta se rechaza hasta registrar una respuesta o cambiar el estado.
+- Se bloquea el borrado de solicitudes con entrega, también mediante FK RESTRICT. Se ofrece anularla. Esto reemplaza el borrado en cascada anterior.
+- Folios anuales por año de creación en Chile. Contadores persistentes y atómicos, inicializados con los máximos existentes; borrar registros no libera números. La reserva ocurre dentro de la transacción de negocio.
+- RUT solo en entregas; la alerta se mostrará al registrar la entrega, no en solicitudes.

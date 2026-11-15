@@ -99,6 +99,10 @@ export function RequestDetailView({ id }: { id: string }) {
               <dd>{formatDateTime(request.updatedAt)}</dd>
             </div>
             <div className="sm:col-span-2">
+              <dt>Descripción</dt>
+              <dd className="break-words whitespace-pre-wrap">{request.description || "Sin descripción"}</dd>
+            </div>
+            <div className="sm:col-span-2">
               <dt>Respuesta</dt>
               <dd className="break-words whitespace-pre-wrap">{request.response || "Sin respuesta"}</dd>
             </div>
@@ -134,7 +138,7 @@ export function RequestDetailView({ id }: { id: string }) {
           {request.delivery && canDelete && (
             <p className="text-muted-foreground flex items-start gap-2 text-xs">
               <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-              Eliminar esta solicitud también elimina su entrega vinculada.
+              Esta solicitud no puede eliminarse mientras tenga una entrega vinculada. Puedes anularla.
             </p>
           )}
         </aside>

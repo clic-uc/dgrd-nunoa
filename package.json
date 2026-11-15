@@ -15,7 +15,7 @@
     "test:permissions": "node --experimental-test-module-mocks --import tsx --test tests/permissions.test.ts tests/permission-routes.test.ts tests/permission-session.test.ts tests/permission-ui.test.ts",
     "test:deliveries": "node --import tsx --test src/features/deliveries/schemas.test.ts src/features/deliveries/service.integration.test.ts",
     "test:supplies": "node --import tsx --test src/features/supplies/schemas.test.ts src/features/supplies/service.integration.test.ts",
-    "test:requests": "node --import tsx --test src/features/requests/schemas.test.ts src/features/requests/service.integration.test.ts",
+    "test:requests": "node --import tsx --test src/features/requests/schemas.test.ts src/features/requests/rules.test.ts src/features/requests/service.integration.test.ts",
     "test:associations": "node --import tsx --test src/features/neighborhood-associations/schemas.test.ts src/features/neighborhood-associations/history.test.ts src/features/neighborhood-associations/service.integration.test.ts"
   },
   "dependencies": {

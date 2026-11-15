@@ -20,7 +20,7 @@ import {
   type RequestListItem,
 } from "../schemas"
 
-const FIELDS = ["channel", "response", "status", "eventId"] as const
+const FIELDS = ["channel", "description", "response", "status", "eventId"] as const
 
 export function RequestFormDialog({
   request,
@@ -36,6 +36,7 @@ export function RequestFormDialog({
     resolver: zodResolver(requestFormSchema),
     defaultValues: {
       channel: request?.channel ?? "",
+      description: request?.description ?? "",
       response: request?.response ?? "",
       status: request?.status ?? "pending",
       eventId: request?.eventId ?? "",
@@ -62,6 +63,7 @@ export function RequestFormDialog({
     try {
       const saved = await mutation.mutateAsync({
         channel: values.channel,
+        description: values.description || null,
         status: values.status,
         response: values.response || null,
         eventId: values.eventId || null,
@@ -177,6 +179,16 @@ export function RequestFormDialog({
               </select>
               <FieldDescription id={`${id}-event-hint`}>{eventHint}</FieldDescription>
               <FieldError id={`${id}-event-error`} errors={[errors.eventId]} />
+            </Field>
+            <Field data-invalid={Boolean(errors.description)}>
+              <FieldLabel htmlFor={`${id}-description`}>Descripción (opcional)</FieldLabel>
+              <Textarea
+                id={`${id}-description`}
+                {...form.register("description")}
+                aria-invalid={Boolean(errors.description)}
+                aria-describedby={`${id}-description-error`}
+              />
+              <FieldError id={`${id}-description-error`} errors={[errors.description]} />
             </Field>
             <Field data-invalid={Boolean(errors.response)}>
               <FieldLabel htmlFor={`${id}-response`}>

@@ -11,7 +11,7 @@ import { createRequest, deleteRequest, getRequest, listRequests, updateRequest }
 
 // Habilitar únicamente contra una DB de desarrollo con las migraciones aplicadas.
 test(
-  "folio, sincronización de evento con la entrega y borrado en cascada confirmado",
+  "folio, sincronización de evento con la entrega y protección de borrado y folios no reutilizables",
   { skip: process.env.RUN_REQUEST_INTEGRATION !== "1", timeout: 90000 },
   async () => {
     const userId = `request-test-${randomUUID()}`
@@ -69,10 +69,14 @@ test(
 
       // B11: el borrado se rechaza si la entrega no es la que se mostró, y luego cae en cascada.
       await assert.rejects(deleteRequest(a.id, ""), hasStatus(409))
-      await deleteRequest(a.id, delivery.id)
-      assert.equal(await prisma.delivery.findUnique({ where: { id: delivery.id } }), null)
-      await assert.rejects(getRequest(a.id), hasStatus(404))
+      await assert.rejects(deleteRequest(a.id, delivery.id), hasStatus(409))
+      assert.equal((await getRequest(a.id)).delivery?.id, delivery.id)
+      await assert.rejects(prisma.request.delete({ where: { id: a.id } }), /Foreign key constraint/)
+      await assert.rejects(updateRequest(b.id, { status: "attended" }), hasStatus(400))
+      await updateRequest(b.id, { status: "attended", response: "Resuelta por teléfono" })
       await deleteRequest(b.id)
+      const c = await createRequest(createRequestSchema.parse({ channel: marker }), userId)
+      assert.ok(Number(c.folio.split("-").at(-1)) > Number(b.folio.split("-").at(-1)))
     } finally {
       await prisma.deliveryItem.deleteMany({ where: { delivery: { createdBy: userId } } })
       await prisma.delivery.deleteMany({ where: { createdBy: userId } })

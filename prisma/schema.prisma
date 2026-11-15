@@ -176,13 +176,14 @@ model Event {
 }
 
 model Request {
-  id        String        @id @default(cuid())
-  folio     String        @unique
-  channel   String // medio
-  response  String?
-  status    RequestStatus @default(pending)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  folio       String        @unique
+  channel     String // medio
+  description String?
+  response    String?
+  status      RequestStatus @default(pending)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   // Al eliminar el Evento, la solicitud se desvincula (eventId -> null).
   eventId String?
@@ -210,10 +211,10 @@ model Delivery {
   createdAt                 DateTime                @default(now())
   updatedAt                 DateTime                @updatedAt
 
-  // Relación 1 -> 0..1 con Solicitud: al eliminar la solicitud, se borra la
-  // entrega en cascada. requestId es único (una entrega por solicitud).
+  // Relación 1 -> 0..1 con Solicitud: una entrega impide borrar su solicitud.
+  // requestId es único (una entrega por solicitud).
   requestId String?  @unique
-  request   Request? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  request   Request? @relation(fields: [requestId], references: [id], onDelete: Restrict)
 
   // eventId se hereda de la solicitud cuando existe. Al eliminar el evento,
   // la entrega se desvincula (eventId -> null).
@@ -313,4 +314,13 @@ model Evidence {
 
   @@index([activityId])
   @@map("evidence")
+}
+
+model FolioCounter {
+  kind  String
+  year  Int
+  value Int
+
+  @@id([kind, year])
+  @@map("folio_counter")
 }

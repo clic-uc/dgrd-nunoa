@@ -35,9 +35,16 @@ test("PATCH conserva omitidos y distingue desvincular el evento", () => {
 })
 
 test("el formulario entrega valores que el servidor acepta", () => {
-  const values = requestFormSchema.parse({ channel: "Presencial", response: "", status: "pending", eventId: "" })
+  const values = requestFormSchema.parse({
+    channel: "Presencial",
+    description: "",
+    response: "",
+    status: "pending",
+    eventId: "",
+  })
   assert.deepEqual(createRequestSchema.parse(values), {
     channel: "Presencial",
+    description: "",
     response: null,
     status: "pending",
     eventId: null,
@@ -63,4 +70,10 @@ test("folio correlativo por año, comparando sufijos como números", () => {
   assert.equal(nextRequestFolio(["SOL-2026-999", "SOL-2026-1000"], 2026), "SOL-2026-1001")
   // Folios heredados (UUID de la rama original) no rompen el correlativo.
   assert.equal(nextRequestFolio(["SOL-6f1c2b9e-uuid", "SOL-2026-abc"], 2026), "SOL-2026-001")
+})
+
+test("descripción opcional distinta de respuesta y tres estados", () => {
+  assert.equal(createRequestSchema.parse({ channel: "Correo", description: " Pedido " }).description, "Pedido")
+  assert.equal(createRequestSchema.safeParse({ channel: "Correo", description: "x".repeat(2001) }).success, false)
+  assert.equal(createRequestSchema.safeParse({ channel: "Correo", status: "derived" }).success, false)
 })
