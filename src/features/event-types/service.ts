@@ -30,7 +30,13 @@ export async function saveEventType(input: EventTypeInput, userId: string, id?: 
 }
 export async function deleteEventType(id: string) {
   try {
-    await prisma.eventType.delete({ where: { id } })
+    await prisma.$transaction(async (tx) => {
+      const locked = await tx.$queryRaw<{ id: string }[]>`SELECT id FROM event_type WHERE id = ${id} FOR UPDATE`
+      if (!locked.length) throw new AppError(404, "El tipo de evento no existe.")
+      if (await tx.event.count({ where: { typeId: id } }))
+        throw new AppError(409, "El tipo está asociado a eventos y no puede eliminarse.")
+      await tx.eventType.delete({ where: { id } })
+    })
   } catch (error) {
     translate(error)
   }
