@@ -94,16 +94,31 @@ export function DeliveryDetailView({
             </h2>
             <dl className="delivery-kv">
               <div>
+                <dt>RUT del beneficiario</dt>
+                <dd>{delivery.beneficiaryRut ?? "Sin RUT histórico; completar al editar"}</dd>
+              </div>
+              <div>
                 <dt>Beneficiario</dt>
                 <dd>{delivery.beneficiary}</dd>
               </div>
               <div>
                 <dt>Junta vecinal</dt>
                 <dd>
-                  <Link href={`/juntas-vecinales/${delivery.neighborhoodAssociationId}`} className="hover:underline">
-                    N°{delivery.neighborhoodAssociation.number} · {delivery.neighborhoodAssociation.name}
-                  </Link>
-                  {!delivery.neighborhoodAssociation.active && <span className="delivery-badge ml-2">Inactiva</span>}
+                  {delivery.neighborhoodAssociation ? (
+                    <>
+                      <Link
+                        href={`/juntas-vecinales/${delivery.neighborhoodAssociationId}`}
+                        className="hover:underline"
+                      >
+                        N°{delivery.neighborhoodAssociation.number} · {delivery.neighborhoodAssociation.name}
+                      </Link>
+                      {!delivery.neighborhoodAssociation.active && (
+                        <span className="delivery-badge ml-2">Inactiva</span>
+                      )}
+                    </>
+                  ) : (
+                    "Sin junta vecinal"
+                  )}
                 </dd>
               </div>
               <div>

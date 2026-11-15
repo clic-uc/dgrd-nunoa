@@ -35,6 +35,7 @@ const optionsServices: Partial<Record<(typeof entities)[number][0], string>> = {
 for (const [resource, singular, plural] of entities) {
   const names = [`create${singular}`, `update${singular}`, `delete${singular}`, `get${singular}`, `list${plural}`]
   const optionsService = optionsServices[resource]
+  if (resource === "deliveries") names.push("getRecurrence")
   if (optionsService) names.push(optionsService)
   mock.module(file(`src/features/${resource}/service.ts`), {
     namedExports: Object.fromEntries(
@@ -89,6 +90,7 @@ test("handlers reales: autorización antes de leer datos o llamar a los servicio
           const payloads: Record<string, object> = {
             deliveries: {
               beneficiary: "Persona",
+              beneficiaryRut: "12345678-5",
               neighborhoodAssociationId: "cm12345678901234567890123",
               address: "Dirección",
               date: "2026-10-30",
@@ -159,4 +161,23 @@ test("historial de junta: transmite filtros y rechaza consultas inválidas sin l
     assert.deepEqual(calls, [])
     assert.ok((await invalid.json()).fieldErrors)
   }
+})
+
+test("recurrencia: solo consulta autorizada y RUT válido", async () => {
+  const { GET } = await import("../src/app/api/deliveries/recurrence/route")
+  for (const candidate of [null, "unknown", "user", "admin"]) {
+    user = candidate ? { id: "operator", role: candidate } : null
+    calls = []
+    const response = await GET(
+      new NextRequest("http://localhost/api/deliveries/recurrence?rut=12.345.678-5&date=2026-11-15"),
+    )
+    assert.equal(response.status, candidate === null ? 401 : candidate === "unknown" ? 403 : 200)
+    assert.equal(calls.length, candidate === "user" || candidate === "admin" ? 1 : 0)
+  }
+  calls = []
+  const invalid = await GET(
+    new NextRequest("http://localhost/api/deliveries/recurrence?rut=12345678-4&date=2026-11-15"),
+  )
+  assert.equal(invalid.status, 400)
+  assert.deepEqual(calls, [])
 })

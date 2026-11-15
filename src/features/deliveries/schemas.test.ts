@@ -11,6 +11,7 @@ import {
 const supplyId = "clxxxxxxxxxxxxxxxxxxxxxxx"
 const input = {
   beneficiary: " Vecina ",
+  beneficiaryRut: "12345678-5",
   neighborhoodAssociationId: "clyyyyyyyyyyyyyyyyyyyyyyy",
   address: "Calle 123",
   date: "2026-10-14",
@@ -70,4 +71,40 @@ test("el folio reinicia por año y ordena sufijos numéricamente", async () => {
   assert.equal(nextDeliveryFolio(["ENT-2026-999", "ENT-2026-1000", "ENT-2026-002"], 2026), "ENT-2026-1001")
   assert.equal(nextDeliveryFolio(["ENT-2026-001", "ENT-2026-003"], 2026), "ENT-2026-004")
   assert.equal(deliveryFolioYear(new Date("2027-01-01T01:00:00Z")), 2026)
+})
+
+test("junta opcional: PATCH omitido conserva, null desvincula y formulario vacío envía null", () => {
+  assert.equal(
+    createDeliverySchema.parse({ ...input, neighborhoodAssociationId: undefined }).neighborhoodAssociationId,
+    undefined,
+  )
+  assert.equal(
+    createDeliverySchema.parse({ ...input, neighborhoodAssociationId: null }).neighborhoodAssociationId,
+    null,
+  )
+  assert.deepEqual(updateDeliverySchema.parse({ neighborhoodAssociationId: null }), { neighborhoodAssociationId: null })
+  assert.deepEqual(updateDeliverySchema.parse({ address: "Otra" }), { address: "Otra" })
+  const values = deliveryFormSchema.parse({
+    ...input,
+    neighborhoodAssociationId: "",
+    contact: "",
+    requestId: "",
+    items: [{ type: "Agua", supplyId, quantity: "2" }],
+  })
+  assert.equal(toDeliveryPayload(values).neighborhoodAssociationId, null)
+  assert.equal(listDeliveriesQuerySchema.parse({ association: "without" }).association, "without")
+})
+
+test("RUT obligatorio, dígito verificador y normalización", async () => {
+  const { rutSchema } = await import("@/lib/rut")
+  assert.equal(rutSchema.parse("12.345.678-5"), "12345678-5")
+  assert.equal(rutSchema.parse("123456785"), "12345678-5")
+  for (const rut of ["", "12345678-4", "00000000-0", "persona"]) assert.equal(rutSchema.safeParse(rut).success, false)
+  assert.equal(createDeliverySchema.safeParse({ ...input, beneficiaryRut: undefined }).success, false)
+})
+test("seis meses calendario: límite inclusivo y ajuste de fin de mes", async () => {
+  const { recurrencePeriod } = await import("./recurrence")
+  assert.equal(recurrencePeriod("2026-08-31").start.toISOString(), "2026-02-28T00:00:00.000Z")
+  assert.equal(recurrencePeriod("2024-08-31").start.toISOString(), "2024-02-29T00:00:00.000Z")
+  assert.equal(recurrencePeriod("2026-01-15").start.toISOString(), "2025-07-15T00:00:00.000Z")
 })

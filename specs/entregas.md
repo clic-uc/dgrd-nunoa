@@ -22,7 +22,7 @@ Decisiones confirmadas el 2026-10-14:
   una tabla de secuencias persistente, borrar el último folio permite reutilizar
   ese correlativo en el siguiente alta.
 - Contacto opcional: vacío se normaliza a `null`.
-- Junta vecinal obligatoria desde el catálogo, con filtro por identificador.
+- Junta vecinal opcional desde el catálogo, con filtro por identificador.
   Las nuevas entregas solo admiten juntas activas; el historial conserva las inactivas.
 - Requerir al menos un insumo, cantidades enteras positivas y no repetir insumos.
 - Asociación opcional a una solicitud; máximo una entrega por solicitud.
@@ -101,3 +101,13 @@ herencia del evento, sustitución de ítems y altas concurrentes.
   El historial por insumo ya está implementado.
 - Al cambiar el evento de una solicitud, sincronizar `Delivery.eventId` en la misma
   transacción, como hace el spike. Es responsabilidad del futuro módulo de solicitudes.
+
+## Decisión del 15 de noviembre de 2026
+
+La junta vecinal es opcional: se admite omitirla o enviar `null`; en PATCH omitir conserva la referencia y `null` la retira. Esta decisión reemplaza la obligatoriedad anterior. Listado y detalle muestran «Sin junta vecinal».
+
+## RUT y recurrencia — decisión del 15 de noviembre de 2026
+
+RUT del beneficiario obligatorio en nuevas entregas y al editar históricos sin RUT. Se valida dígito verificador y se normaliza sin puntos, con guion y K mayúscula; no se deduce por nombre. RUT solo en entregas. Históricos permanecen sin identidad hasta completarla; no se inventan RUT ni se destruyen registros.
+
+Al registrar o editar se consulta el historial por RUT y fecha de entrega. Ventana inclusiva desde seis meses calendario antes (ajustando al último día válido del mes) hasta la fecha indicada; se excluye la entrega editada. Desde una entrega previa se muestran folio, fecha, insumos, cantidades y unidades, sin bloqueo ni evaluación por junta. Si falla la consulta se informa y se permite reintentar o guardar. La alerta no implica datos de solicitudes: muestra lo efectivamente entregado. API autenticada GET /api/deliveries/recurrence.

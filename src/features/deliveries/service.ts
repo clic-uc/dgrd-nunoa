@@ -1,3 +1,4 @@
+import { recurrencePeriod } from "./recurrence"
 import { reserveFolio } from "@/lib/folio"
 import { assertAttended } from "@/features/requests/rules"
 import { deliveryFolioYear } from "./folio"
@@ -15,7 +16,18 @@ const include = {
 } satisfies Prisma.DeliveryInclude
 
 export async function listDeliveries(query: ListDeliveriesQuery) {
-  const { q, from, to, event, beneficiary, eventId, supplyId, neighborhoodAssociationId, order = "desc" } = query
+  const {
+    q,
+    from,
+    to,
+    event,
+    beneficiary,
+    eventId,
+    supplyId,
+    neighborhoodAssociationId,
+    association,
+    order = "desc",
+  } = query
   const where: Prisma.DeliveryWhereInput = {
     ...(from || to
       ? {
@@ -26,13 +38,18 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
         }
       : {}),
     ...(event === "with" ? { eventId: { not: null } } : event === "without" ? { eventId: null } : {}),
+    ...(association === "without"
+      ? { neighborhoodAssociationId: null }
+      : association === "with"
+        ? { neighborhoodAssociationId: { not: null } }
+        : {}),
     ...(neighborhoodAssociationId && { neighborhoodAssociationId }),
     ...(beneficiary && { beneficiary: { contains: beneficiary, mode: "insensitive" } }),
     ...(eventId && { eventId }),
     ...(supplyId && { items: { some: { supplyId } } }),
     ...(q && {
       OR: [
-        ...["folio", "beneficiary", "address"].map((field) => ({
+        ...["folio", "beneficiary", "beneficiaryRut", "address"].map((field) => ({
           [field]: { contains: q, mode: "insensitive" },
         })),
         { neighborhoodAssociation: { name: { contains: q, mode: "insensitive" } } },
@@ -51,7 +68,7 @@ export async function listDeliveries(query: ListDeliveriesQuery) {
     stats: {
       deliveries: data.length,
       units: data.reduce((sum, row) => sum + row.items.reduce((total, item) => total + item.quantity, 0), 0),
-      neighborhoods: new Set(data.map((row) => row.neighborhoodAssociationId)).size,
+      neighborhoods: new Set(data.map((row) => row.neighborhoodAssociationId).filter(Boolean)).size,
     },
   }
 }
@@ -94,9 +111,9 @@ async function validateRelations(
   tx: Prisma.TransactionClient,
   input: UpdateDeliveryInput,
   id?: string,
-  currentAssociationId?: string,
+  currentAssociationId?: string | null,
 ) {
-  if (input.neighborhoodAssociationId !== undefined) {
+  if (input.neighborhoodAssociationId) {
     const associations = await tx.$queryRaw<
       { id: string; active: boolean }[]
     >`SELECT id, active FROM neighborhood_association WHERE id = ${input.neighborhoodAssociationId} FOR SHARE`
@@ -154,15 +171,18 @@ export async function updateDelivery(id: string, input: UpdateDeliveryInput) {
       await tx.$queryRaw`SELECT id FROM "delivery" WHERE id = ${id} FOR UPDATE`
       const current = await tx.delivery.findUnique({
         where: { id },
-        select: { id: true, neighborhoodAssociationId: true, requestId: true },
+        select: { id: true, neighborhoodAssociationId: true, requestId: true, beneficiaryRut: true },
       })
       if (!current) throw new AppError(404, "La entrega no existe.")
+      if (!input.beneficiaryRut && !current.beneficiaryRut)
+        fail("beneficiaryRut", "Completa el RUT del beneficiario para actualizar esta entrega.")
       if (current.requestId !== original?.requestId)
         throw new AppError(409, "La solicitud vinculada cambió. Revisa la entrega.")
       if (current.requestId && input.requestId !== undefined && input.requestId !== current.requestId) {
         const source = await tx.request.findUniqueOrThrow({ where: { id: current.requestId } })
         assertAttended(source.status, source.response, false)
       }
+
       const eventId = await validateRelations(tx, input, id, current.neighborhoodAssociationId)
       const { items, ...fields } = input
       if (items) await tx.deliveryItem.deleteMany({ where: { deliveryId: id } })
@@ -224,4 +244,19 @@ export async function createDelivery(input: CreateDeliveryInput, userId: string)
   } catch (error) {
     translateError(error)
   }
+}
+
+export async function getRecurrence({ rut, date, excludeId }: { rut: string; date: string; excludeId?: string }) {
+  const { start, end } = recurrencePeriod(date)
+  const deliveries = await prisma.delivery.findMany({
+    where: { beneficiaryRut: rut, date: { gte: start, lte: end }, ...(excludeId && { id: { not: excludeId } }) },
+    select: {
+      id: true,
+      folio: true,
+      date: true,
+      items: { select: { quantity: true, supply: { select: { type: true, unit: true } } } },
+    },
+    orderBy: [{ date: "desc" }, { id: "desc" }],
+  })
+  return { from: start.toISOString(), to: end.toISOString(), deliveries }
 }

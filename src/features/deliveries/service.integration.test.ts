@@ -11,6 +11,7 @@ import {
   getDelivery,
   getDeliveryOptions,
   listDeliveries,
+  getRecurrence,
 } from "./service"
 import { createDeliverySchema, updateDeliverySchema } from "./schemas"
 
@@ -46,6 +47,7 @@ test(
       })
       const input = createDeliverySchema.parse({
         beneficiary: marker,
+        beneficiaryRut: "12345678-5",
         neighborhoodAssociationId: association.id,
         address: "Calle de prueba",
         date: "2026-10-14",
@@ -53,10 +55,39 @@ test(
         items: [{ supplyId: supply.id, quantity: 2 }],
       })
       const delivery = await createDelivery(input, userId)
+      const recurrence = await getRecurrence({ rut: "12345678-5", date: "2026-10-14" })
+      assert.ok(recurrence.deliveries.some((row) => row.id === delivery.id))
+      assert.ok(
+        !(await getRecurrence({ rut: "12345678-5", date: "2026-10-14", excludeId: delivery.id })).deliveries.some(
+          (row) => row.id === delivery.id,
+        ),
+      )
+      assert.ok(
+        !(await getRecurrence({ rut: "12345678-5", date: "2027-04-15" })).deliveries.some(
+          (row) => row.id === delivery.id,
+        ),
+      )
+      assert.ok(
+        !(await getRecurrence({ rut: "11111111-1", date: "2026-10-14" })).deliveries.some(
+          (row) => row.id === delivery.id,
+        ),
+      )
       assert.equal(delivery.eventId, event.id)
       assert.equal(delivery.contact, null)
       assert.equal(delivery.items[0].quantity, 2)
       assert.equal((await getDelivery(delivery.id)).creator.name, marker)
+      const noAssociation = await createDelivery({ ...input, requestId: null, neighborhoodAssociationId: null }, userId)
+      assert.equal(noAssociation.neighborhoodAssociation, null)
+      const without = await listDeliveries({ q: marker, association: "without" })
+      assert.deepEqual(
+        without.data.map((row) => row.id),
+        [noAssociation.id],
+      )
+      assert.equal(without.stats.neighborhoods, 0)
+      await updateDelivery(noAssociation.id, { neighborhoodAssociationId: association.id })
+      assert.equal((await getDelivery(noAssociation.id)).neighborhoodAssociation?.id, association.id)
+      await updateDelivery(noAssociation.id, { neighborhoodAssociationId: null })
+      await deleteDelivery(noAssociation.id)
       await assert.rejects(
         createDelivery(input, userId),
         (error: unknown) => error instanceof AppError && error.status === 409 && Boolean(error.fieldErrors?.requestId),

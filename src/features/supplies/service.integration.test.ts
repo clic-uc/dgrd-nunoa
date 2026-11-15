@@ -44,6 +44,7 @@ test(
       await updateSupply(supply.id, { unit: "unidad" })
       const input = createDeliverySchema.parse({
         beneficiary: marker,
+        beneficiaryRut: "12345678-5",
         neighborhoodAssociationId: association.id,
         address: "Prueba",
         date: "2026-10-14",
@@ -98,6 +99,7 @@ test(
           data: {
             folio: marker,
             beneficiary: marker,
+            beneficiaryRut: "12345678-5",
             neighborhoodAssociationId: association.id,
             address: "Prueba",
             date: new Date("2026-10-14"),

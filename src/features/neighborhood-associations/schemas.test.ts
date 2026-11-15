@@ -30,14 +30,15 @@ test("el formulario convierte número string y PATCH conserva los omitidos", () 
   assert.deepEqual(updateNeighborhoodAssociationSchema.parse({ active: false }), { active: false })
   assert.equal(listNeighborhoodAssociationsQuerySchema.safeParse({ status: "invalid" }).success, false)
 })
-test("las entregas requieren una referencia CUID, no texto libre", () => {
+test("la junta es opcional y las referencias presentes deben ser CUID", () => {
   const input = {
     beneficiary: "Vecina",
+    beneficiaryRut: "12345678-5",
     address: "Calle",
     date: "2026-10-14",
     items: [{ supplyId: "clxxxxxxxxxxxxxxxxxxxxxxx", quantity: 1 }],
   }
-  assert.equal(createDeliverySchema.safeParse({ ...input, jv: "JV 12" }).success, false)
+  assert.equal(createDeliverySchema.safeParse(input).success, true)
   assert.equal(createDeliverySchema.safeParse({ ...input, neighborhoodAssociationId: "JV 12" }).success, false)
   assert.equal(
     createDeliverySchema.safeParse({ ...input, neighborhoodAssociationId: "clyyyyyyyyyyyyyyyyyyyyyyy" }).success,
