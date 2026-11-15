@@ -86,6 +86,10 @@ mock.module(file("src/features/requests/components/requests-view.tsx"), {
   namedExports: { RequestsView: () => createElement("div", null, "RESTRICTED_CONTENT") },
 })
 
+mock.module(file("src/features/events/components/events-view.tsx"), {
+  namedExports: { EventsView: () => createElement("div", null, "RESTRICTED_CONTENT") },
+})
+
 test("navegación, estados vacíos y diálogos respetan ambos roles", async () => {
   const { AppSidebar } = await import("../src/components/layout/app-sidebar")
   const { AssociationsView } = await import("../src/features/neighborhood-associations/components/associations-view")

@@ -1,4 +1,5 @@
 "use client"
+import { DeliveryFormDialog } from "@/features/deliveries/components/delivery-form-dialog"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -14,6 +15,7 @@ import { RequestStatusBadge } from "./request-status-badge"
 import "@/features/deliveries/components/deliveries.css"
 
 export function RequestDetailView({ id }: { id: string }) {
+  const [creatingDelivery, setCreatingDelivery] = useState(false)
   const [editing, setEditing] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const canUpdate = usePermission("requests", "update")
@@ -113,7 +115,9 @@ export function RequestDetailView({ id }: { id: string }) {
             <h2>Evento asociado</h2>
             {request.event ? (
               <div className="delivery-related">
-                <span className="delivery-badge delivery-badge-event">{request.event.folio}</span>
+                <Link href={`/eventos/${request.event.id}`} className="delivery-badge delivery-badge-event underline">
+                  {request.event.folio}
+                </Link>
                 <span>{request.event.sector}</span>
               </div>
             ) : (
@@ -132,7 +136,10 @@ export function RequestDetailView({ id }: { id: string }) {
                 </span>
               </div>
             ) : (
-              <p>Sin entrega asociada.</p>
+              <div className="space-y-3">
+                <p>Sin entrega asociada.</p>
+                <Button onClick={() => setCreatingDelivery(true)}>Registrar entrega</Button>
+              </div>
             )}
           </section>
           {request.delivery && canDelete && (
@@ -143,6 +150,7 @@ export function RequestDetailView({ id }: { id: string }) {
           )}
         </aside>
       </div>
+      {creatingDelivery && <DeliveryFormDialog open defaultRequestId={request.id} onOpenChange={setCreatingDelivery} />}
       {editing && <RequestFormDialog request={request} onClose={() => setEditing(false)} />}
       {deleting && (
         <DeleteRequestDialog

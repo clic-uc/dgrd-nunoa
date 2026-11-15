@@ -21,6 +21,7 @@ const entities = [
   ["neighborhood-associations", "NeighborhoodAssociation", "NeighborhoodAssociations"],
   ["strategic-actions", "StrategicAction", "StrategicActions"],
   ["requests", "Request", "Requests"],
+  ["events", "Event", "Events"],
 ] as const
 // Recursos con un endpoint `/options` que alimenta los selectores del formulario.
 const optionsServices: Partial<Record<(typeof entities)[number][0], string>> = {
@@ -72,7 +73,9 @@ test("handlers reales: autorización antes de leer datos o llamar a los servicio
         const forbidden =
           role === "unknown" ||
           (role === "user" &&
-            (resource === "requests" || (resource !== "deliveries" && resource !== "supplies" && method !== "GET")))
+            (resource === "requests" ||
+              resource === "events" ||
+              (resource !== "deliveries" && resource !== "supplies" && method !== "GET")))
         if (role === null || forbidden) {
           const response = await handler[method](request, { params: Promise.resolve({ id: "other-authors-record" }) })
           assert.equal(response.status, role === null ? 401 : 403, `${role} ${method} ${resource}`)
@@ -89,6 +92,14 @@ test("handlers reales: autorización antes de leer datos o llamar a los servicio
             },
             supplies: { type: "Agua", unit: "litro" },
             requests: { channel: "Teléfono" },
+            events: {
+              date: "2026-11-15",
+              sector: "Sector",
+              typeId: "cm12345678901234567890123",
+              affectedCount: null,
+              institutions: "DGRD",
+              actions: "Inspección",
+            },
             "neighborhood-associations": { number: 1, name: "Junta", active: true },
             "strategic-actions": {
               number: 1,

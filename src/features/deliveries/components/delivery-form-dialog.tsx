@@ -22,6 +22,7 @@ type DeliveryFormDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   delivery?: Delivery
+  defaultRequestId?: string
 }
 
 export function DeliveryFormDialog(props: DeliveryFormDialogProps) {
@@ -30,7 +31,7 @@ export function DeliveryFormDialog(props: DeliveryFormDialogProps) {
   return props.open ? <DeliveryFormContent key={props.delivery?.id ?? "new"} {...props} /> : null
 }
 
-function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialogProps) {
+function DeliveryFormContent({ open, onOpenChange, delivery, defaultRequestId }: DeliveryFormDialogProps) {
   const form = useForm<DeliveryFormValues>({
     resolver: zodResolver(deliveryFormSchema),
     defaultValues: {
@@ -39,7 +40,7 @@ function DeliveryFormContent({ open, onOpenChange, delivery }: DeliveryFormDialo
       contact: delivery?.contact ?? "",
       address: delivery?.address ?? "",
       date: delivery?.date.slice(0, 10) ?? today(),
-      requestId: delivery?.requestId ?? "",
+      requestId: delivery?.requestId ?? defaultRequestId ?? "",
       items: delivery
         ? delivery.items.map((item) => ({
             type: item.supply.type,
