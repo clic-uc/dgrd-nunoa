@@ -91,6 +91,16 @@ export async function saveUser(input: UserInput, actorId: string, id?: string) {
       const user = current
         ? await tx.user.update({ where: { id: userId }, data, select })
         : await tx.user.create({ data: { ...data, id: userId, emailVerified: false }, select })
+      if (current && hashedPassword)
+        await tx.auditLog.create({
+          data: {
+            actorId,
+            actorName: (await tx.user.findUnique({ where: { id: actorId }, select: { name: true } }))?.name,
+            entity: "user",
+            recordId: userId,
+            operation: "PASSWORD_RESET",
+          },
+        })
       if (hashedPassword) {
         const account = await tx.account.findFirst({
           where: { userId, providerId: "credential" },
@@ -123,7 +133,7 @@ export async function deleteUser(id: string, actorId: string) {
       if (id === actorId) throw new AppError(409, "No puedes eliminar tu propia cuenta.")
       const user = await tx.user.findUnique({ where: { id }, select })
       if (!user) throw new AppError(404, "La cuenta no existe.")
-      if (dto(user).historyCount)
+      if (dto(user).historyCount || (await tx.auditLog.count({ where: { actorId: id } })))
         throw new AppError(409, "La cuenta tiene historial. Desactívala para conservar los registros.")
       if (
         user.role === "admin" &&

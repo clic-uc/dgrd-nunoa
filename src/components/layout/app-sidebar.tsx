@@ -35,6 +35,7 @@ const groups: { label: string; items: { href: string; label: string; resource: R
   {
     label: "Administración",
     items: [
+      { href: "/administracion/auditoria", label: "Auditoría", resource: "audit", icon: FileText },
       { href: "/administracion/usuarios", label: "Usuarios", resource: "users", icon: Users },
       { href: "/administracion/tipos-evento", label: "Tipos de evento", resource: "event-types", icon: Settings },
     ],

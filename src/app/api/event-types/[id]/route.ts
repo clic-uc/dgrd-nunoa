@@ -1,3 +1,4 @@
+import { withAudit } from "@/lib/audit"
 import { NextResponse, type NextRequest } from "next/server"
 import { requirePermission } from "@/lib/session"
 import { toErrorResponse } from "@/lib/api-error"
@@ -8,7 +9,9 @@ export async function PATCH(request: NextRequest, { params }: Context) {
   try {
     const user = await requirePermission("event-types", "update")
     return NextResponse.json(
-      await saveEventType(eventTypeSchema.parse(await request.json()), user.id, (await params).id),
+      await withAudit(user.id, async () =>
+        saveEventType(eventTypeSchema.parse(await request.json()), user.id, (await params).id),
+      ),
     )
   } catch (error) {
     return toErrorResponse(error)
@@ -16,8 +19,8 @@ export async function PATCH(request: NextRequest, { params }: Context) {
 }
 export async function DELETE(_request: NextRequest, { params }: Context) {
   try {
-    await requirePermission("event-types", "delete")
-    await deleteEventType((await params).id)
+    const user = await requirePermission("event-types", "delete")
+    await withAudit(user.id, async () => deleteEventType((await params).id))
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     return toErrorResponse(error)

@@ -10,6 +10,9 @@ let user: { id: string; role: string } | null = null
 let calls: string[] = []
 let lastArgs: unknown[] = []
 const file = (path: string) => pathToFileURL(resolve(path)).href
+mock.module(file("src/lib/audit.ts"), {
+  namedExports: { withAudit: async (_actor: string, operation: () => Promise<unknown>) => operation() },
+})
 mock.module(file("src/lib/session.ts"), {
   namedExports: {
     requirePermission: async (resource: Resource, action: Action) => authorizeUser(user, resource, action),

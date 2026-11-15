@@ -1,3 +1,4 @@
+import { withAudit } from "@/lib/audit"
 import { NextResponse, type NextRequest } from "next/server"
 import { requirePermission } from "@/lib/session"
 import { toErrorResponse } from "@/lib/api-error"
@@ -15,20 +16,20 @@ export async function GET(_request: NextRequest, { params }: Context) {
 }
 export async function PATCH(request: NextRequest, { params }: Context) {
   try {
-    await requirePermission("requests", "update")
+    const user = await requirePermission("requests", "update")
     const { id } = await params
     const input = updateRequestSchema.parse(await request.json())
-    return NextResponse.json(await updateRequest(id, input))
+    return NextResponse.json(await withAudit(user.id, async () => updateRequest(id, input)))
   } catch (error) {
     return toErrorResponse(error)
   }
 }
 export async function DELETE(request: NextRequest, { params }: Context) {
   try {
-    await requirePermission("requests", "delete")
+    const user = await requirePermission("requests", "delete")
     const { id } = await params
     const { expectedDeliveryId } = deleteRequestQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams))
-    await deleteRequest(id, expectedDeliveryId)
+    await withAudit(user.id, async () => deleteRequest(id, expectedDeliveryId))
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     return toErrorResponse(error)

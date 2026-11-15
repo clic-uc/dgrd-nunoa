@@ -1,3 +1,4 @@
+import { withAudit } from "@/lib/audit"
 import { NextResponse, type NextRequest } from "next/server"
 import { toErrorResponse } from "@/lib/api-error"
 import { requirePermission } from "@/lib/session"
@@ -25,7 +26,9 @@ export async function POST(request: NextRequest) {
     const user = await requirePermission("strategic-actions", "create")
     const input = createStrategicActionSchema.parse(await request.json())
 
-    return NextResponse.json(await createStrategicAction(input, user.id), { status: 201 })
+    return NextResponse.json(await withAudit(user.id, async () => createStrategicAction(input, user.id)), {
+      status: 201,
+    })
   } catch (error) {
     return toErrorResponse(error)
   }

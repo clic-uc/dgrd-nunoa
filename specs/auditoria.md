@@ -1,0 +1,7 @@
+# Auditoría
+
+Solo administradores consultan `/administracion/auditoria` y GET `/api/audit`. Se registran altas, modificaciones y eliminaciones en usuarios, tipos, insumos, juntas, eventos, solicitudes, entregas, ítems, acciones, actividades y evidencia. Se conserva ejecutor, nombre al momento de la acción, fecha, entidad, id y valores anteriores/posteriores. Restablecimientos/cambios de contraseña registran solo la acción, nunca contraseña ni hash. Cuentas, sesiones y tokens de autenticación se excluyen de los snapshots.
+
+Triggers de PostgreSQL guardan el historial en la misma transacción que los datos. La API establece el ejecutor mediante configuración local a la transacción y AsyncLocalStorage; las transacciones de los servicios participan en ella. Una operación fallida revierte datos y auditoría; solicitudes concurrentes no comparten ejecutor. Escrituras directas de SQL o scripts sin contexto quedan con ejecutor desconocido, no se atribuyen al autor del registro. No se reconstruye historial anterior a la migración.
+
+La consulta permite filtrar entidad, ejecutor y periodo inclusivo, con páginas de 50 por cursor. No existe API para editar o borrar logs. Se conservan mientras no se defina una política explícita de retención. El administrador de la base conserva sus privilegios de SQL; esto no promete resistencia a modificaciones por un DBA. Los registros conservan id/nombre del ejecutor aunque una cuenta sin historial de dominio haya desaparecido; no hay FK que permita borrar auditoría en cascada.

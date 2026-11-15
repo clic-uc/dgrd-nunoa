@@ -9,6 +9,9 @@ import type { Resource, Action } from "../src/lib/permissions"
 const file = (path: string) => pathToFileURL(resolve(path)).href
 let role: string | null = null
 let calls = 0
+mock.module(file("src/lib/audit.ts"), {
+  namedExports: { withAudit: async (_actor: string, operation: () => Promise<unknown>) => operation() },
+})
 mock.module(file("src/lib/session.ts"), {
   namedExports: {
     requirePermission: async (resource: Resource, action: Action) =>

@@ -1,3 +1,4 @@
+import { withAudit } from "@/lib/audit"
 import { NextResponse, type NextRequest } from "next/server"
 import { requirePermission } from "@/lib/session"
 import { toErrorResponse } from "@/lib/api-error"
@@ -23,19 +24,19 @@ export async function GET(request: NextRequest, { params }: Context) {
 }
 export async function PATCH(request: NextRequest, { params }: Context) {
   try {
-    await requirePermission("neighborhood-associations", "update")
+    const user = await requirePermission("neighborhood-associations", "update")
     const { id } = await params
     const input = updateNeighborhoodAssociationSchema.parse(await request.json())
-    return NextResponse.json(await updateNeighborhoodAssociation(id, input))
+    return NextResponse.json(await withAudit(user.id, async () => updateNeighborhoodAssociation(id, input)))
   } catch (error) {
     return toErrorResponse(error)
   }
 }
 export async function DELETE(_request: NextRequest, { params }: Context) {
   try {
-    await requirePermission("neighborhood-associations", "delete")
+    const user = await requirePermission("neighborhood-associations", "delete")
     const { id } = await params
-    await deleteNeighborhoodAssociation(id)
+    await withAudit(user.id, async () => deleteNeighborhoodAssociation(id))
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     return toErrorResponse(error)

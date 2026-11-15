@@ -1,3 +1,4 @@
+import { withAudit } from "@/lib/audit"
 import { NextResponse, type NextRequest } from "next/server"
 import { toErrorResponse } from "@/lib/api-error"
 import { requirePermission } from "@/lib/session"
@@ -19,11 +20,11 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 
 export async function PATCH(request: NextRequest, { params }: RouteContext) {
   try {
-    await requirePermission("deliveries", "update")
+    const user = await requirePermission("deliveries", "update")
     const { id } = await params
     const input = updateDeliverySchema.parse(await request.json())
 
-    return NextResponse.json(await updateDelivery(id, input))
+    return NextResponse.json(await withAudit(user.id, async () => updateDelivery(id, input)))
   } catch (error) {
     return toErrorResponse(error)
   }
@@ -31,9 +32,9 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
 
 export async function DELETE(_request: NextRequest, { params }: RouteContext) {
   try {
-    await requirePermission("deliveries", "delete")
+    const user = await requirePermission("deliveries", "delete")
     const { id } = await params
-    await deleteDelivery(id)
+    await withAudit(user.id, async () => deleteDelivery(id))
 
     return new NextResponse(null, { status: 204 })
   } catch (error) {

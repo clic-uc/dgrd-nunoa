@@ -11,6 +11,7 @@ export const resources = [
   "summary",
   "users",
   "event-types",
+  "audit",
 ] as const
 export const actions = ["read", "create", "update", "delete"] as const
 export type Resource = (typeof resources)[number]
